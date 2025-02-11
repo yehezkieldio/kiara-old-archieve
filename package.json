@@ -26,6 +26,7 @@
         "commander": "^13.1.0",
         "consola": "^3.4.0",
         "execa": "^9.5.2",
+        "neverthrow": "^8.1.1",
         "octokit": "^4.1.1",
         "type-fest": "^4.34.1"
     },

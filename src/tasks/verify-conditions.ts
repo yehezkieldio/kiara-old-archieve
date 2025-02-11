@@ -1,7 +1,17 @@
+import type { ResultAsync } from "neverthrow";
+import { logger } from "#/lib/logger";
 import { preflightEnvironment } from "#/lib/preflight/environment";
 import { preflightGit } from "#/lib/preflight/git";
+import { ok } from "neverthrow";
 
-export async function verifyConditions(): Promise<void> {
-    await preflightEnvironment();
-    await preflightGit();
+export function verifyConditions(): ResultAsync<void, Error> {
+    return preflightEnvironment()
+        .andThen(() => {
+            logger.withTag("PREFLIGHT").info("Preflight environment checks passed.");
+            return preflightGit();
+        })
+        .andThen(() => {
+            logger.withTag("PREFLIGHT").info("Preflight git checks passed.");
+            return ok(undefined);
+        });
 }

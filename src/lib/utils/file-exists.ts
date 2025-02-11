@@ -1,12 +1,12 @@
 import { constants } from "node:fs";
 import { access } from "node:fs/promises";
+import { ResultAsync } from "neverthrow";
 
-export async function fileExists(filePath: string): Promise<boolean> {
-    try {
-        await access(filePath, constants.F_OK);
-        return true;
-    }
-    catch {
-        return false;
-    }
+export function fileExists(path: string): ResultAsync<boolean, Error> {
+    return ResultAsync.fromPromise(
+        access(path, constants.F_OK)
+            .then(() => true)
+            .catch(() => false),
+        error => new Error(`Error checking if file exists: ${error}`),
+    );
 }

@@ -1,39 +1,54 @@
-import { configExists } from "#/config";
-import { currentGitCliffConfigPath, currentPackageJsonPath } from "#/lib/constants";
-import { logger } from "#/lib/logger";
+import type { Result } from "neverthrow";
+import { join } from "node:path";
+import { currentGitCliffConfigPath, currentPackageJsonPath, currentWorkingDirectory } from "#/lib/constants";
 import { fileExists } from "#/lib/utils/file-exists";
+import { err, ok, ResultAsync } from "neverthrow";
 
-export async function preflightEnvironment(): Promise<void> {
-    checkGitToken();
-    await checkPackageJson();
-    await checkGitCliffConfig();
-    await checkConfig();
+export function preflightEnvironment(): ResultAsync<void, Error> {
+    return checkGitToken()
+        .asyncAndThen(() => checkPackageJson())
+        .andThen(() => checkGitCliffConfiguration())
+        .andThen(() => checkKiaraConfig());
 }
 
-function checkGitToken(): void {
+function checkGitToken(): Result<void, Error> {
     if (!process.env.GITHUB_TOKEN && !process.env.GH_TOKEN) {
-        logger.error("Could not find a GitHub token in the environment. Please set the GITHUB_TOKEN or GH_TOKEN environment variable.");
-        process.exit(1);
+        return err(new Error("Could not find a GitHub token in the environment. Please set a GITHUB_TOKEN or GH_TOKEN environment variable."));
     }
+    return ok(undefined);
 }
 
-async function checkPackageJson(): Promise<void> {
-    if (!await fileExists(currentPackageJsonPath)) {
-        logger.error("Could not find a package.json in the current working directory.");
-        process.exit(1);
-    }
+function checkPackageJson(): ResultAsync<void, Error> {
+    return fileExists(currentPackageJsonPath)
+        .andThen(exists =>
+            exists
+                ? ok(undefined)
+                : err(new Error("Could not find a package.json in the current working directory.")),
+        );
 }
 
-async function checkGitCliffConfig(): Promise<void> {
-    if (!await fileExists(currentGitCliffConfigPath)) {
-        logger.error("Could not find a cliff.toml in the current working directory.");
-        process.exit(1);
-    }
+function checkGitCliffConfiguration(): ResultAsync<void, Error> {
+    return fileExists(currentGitCliffConfigPath)
+        .andThen(exists =>
+            exists
+                ? ok(undefined)
+                : err(new Error("Could not find a .gitcliff.json configuration file in the current working directory.")),
+        );
 }
 
-async function checkConfig(): Promise<void> {
-    if (!await configExists()) {
-        logger.error("Could not find a kiara.config.js or kiara.config.ts in the current working directory.");
-        process.exit(1);
-    }
+function checkKiaraConfig(): ResultAsync<void, Error> {
+    const extensions = [".js", ".ts", ".mjs", ".cjs", ".mts", ".cts", ".json"] as const;
+    const configFiles = extensions.map((ext): string => `kiara.config${ext}`);
+
+    const fileChecks = configFiles.map(file =>
+        fileExists(join(currentWorkingDirectory, file)),
+    );
+
+    return ResultAsync.combine(fileChecks)
+        .map(results => results.some(exists => exists))
+        .andThen(exists =>
+            exists
+                ? ok(undefined)
+                : err(new Error("Could not find a kiara configuration file in the current working directory.")),
+        );
 }

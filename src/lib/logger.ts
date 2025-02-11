@@ -100,9 +100,6 @@ function formatTimestamp(date: Date): string {
     return color.gray(`[${_date}]`);
 }
 
-type FormatStyleFn = () => string;
-type FormatStylesMap = Record<LogType | "default", FormatStyleFn>;
-
 function createBadgeStyle(payload: LogObject, typeColor: ColorName): string {
     return color.bold(getBgColor(typeColor)(color.black(` ${payload.type.toUpperCase()} `)));
 }
@@ -112,36 +109,44 @@ function createTextStyle(typePrefix: string, typeColor: ColorName): string {
 }
 
 function formatType(payload: LogObject, isBadge: boolean): string {
-    const typeColor: ColorName = TYPE_COLOR_MAP[payload.type] as ColorName;
-    const typePrefix: string = TYPE_PREFIX[payload.type] || payload.type.toUpperCase();
+    let formatter: string;
+    let typeColor: ColorName;
+    let prefix: string;
 
-    const FORMAT_STYLES: FormatStylesMap = {
-        fatal: (): string => createBadgeStyle(payload, typeColor),
-        fail: (): string => createBadgeStyle(payload, typeColor),
-        error: (): string => createTextStyle(typePrefix, typeColor),
-        warn: (): string => createTextStyle(typePrefix, typeColor),
-        info: (): string => createTextStyle(typePrefix, typeColor),
-        success: (): string => createTextStyle(typePrefix, typeColor),
-        debug: (): string => createTextStyle(typePrefix, typeColor),
-        trace: (): string => createTextStyle(typePrefix, typeColor),
-        start: (): string => createTextStyle(typePrefix, typeColor),
-        log: (): string => createTextStyle(typePrefix, typeColor),
-        silent: (): string => createTextStyle(typePrefix, typeColor),
-        ready: (): string => createTextStyle(typePrefix, typeColor),
-        box: (): string => createTextStyle(typePrefix, typeColor),
-        verbose: (): string => createTextStyle(typePrefix, typeColor),
-        default: (): string => {
-            return isBadge ? createBadgeStyle(payload, typeColor) : createTextStyle(typePrefix, typeColor);
-        },
-    };
+    if (payload.tag) {
+        typeColor = "gray";
+        prefix = payload.tag.toUpperCase();
+        formatter = createTextStyle(prefix, typeColor);
+    }
+    else {
+        typeColor = TYPE_COLOR_MAP[payload.type] as ColorName;
+        prefix = TYPE_PREFIX[payload.type] || payload.type.toUpperCase();
 
-    const formatter: FormatStyleFn = FORMAT_STYLES[payload.type] || FORMAT_STYLES.default;
-    const formattedType: string = formatter();
+        const simpleTextTypes = [
+            "error",
+            "warn",
+            "info",
+            "success",
+            "debug",
+            "trace",
+            "start",
+            "log",
+            "silent",
+            "ready",
+            "box",
+            "verbose",
+        ];
 
-    const visibleLength: number = stripAnsi(formattedType).length;
-    const padding: number = Math.max(0, 7 - visibleLength);
+        const useBadge: boolean
+            = ["fatal", "fail"].includes(payload.type) || (!simpleTextTypes.includes(payload.type) && isBadge);
 
-    return formattedType + " ".repeat(padding);
+        formatter = useBadge ? createBadgeStyle(payload, typeColor) : createTextStyle(prefix, typeColor);
+    }
+
+    const visibleLength: number = stripAnsi(formatter).length;
+    const padding: number = Math.max(0, 9 - visibleLength);
+
+    return formatter + " ".repeat(padding);
 }
 
 function formatArgs(args: unknown[], opts: FormatOptions): string {

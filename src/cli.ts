@@ -23,7 +23,15 @@ program.action(async (): Promise<void> => {
         logger.level = LogLevels.verbose;
     }
 
-    await verifyConditions();
+    await verifyConditions().match(
+        () => {
+            logger.withTag("PREFLIGHT").success("All preflight checks passed.");
+        },
+        (error) => {
+            logger.error(error.message);
+            process.exit(1);
+        },
+    );
 });
 
 program.parse(Bun.argv);
