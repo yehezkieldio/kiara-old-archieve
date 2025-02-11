@@ -8,8 +8,7 @@ export function preflightGit(): ResultAsync<void, Error> {
     return checkGitRepository()
         .andThen(() => checkTokenScopes())
         .andThen(() => checkUncommittedChanges())
-        .andThen(() => checkReleaseBranch())
-        .andThen(() => checkLatestCommit());
+        .andThen(() => checkReleaseBranch());
 }
 
 function checkGitRepository(): ResultAsync<void, Error> {
@@ -63,25 +62,5 @@ function checkReleaseBranch(): ResultAsync<void, Error> {
         return result.stdout === releaseBranch
             ? ok(undefined)
             : err(new Error(`You are not on the ${releaseBranch} branch. Please checkout the ${releaseBranch} branch before running this command.`));
-    });
-}
-
-function checkLatestCommit(): ResultAsync<void, Error> {
-    const releaseBranch = config.releaseBranch || "master";
-
-    const current = ResultAsync.fromPromise(
-        execa("git", ["rev-parse", "HEAD"]),
-        error => new Error(`Error checking current commit: ${error}`),
-    ).map(result => result.stdout.slice(0, 7));
-
-    const latest = ResultAsync.fromPromise(
-        execa("git", ["rev-parse", `${releaseBranch}`]),
-        error => new Error(`Error checking latest commit: ${error}`),
-    ).map(result => result.stdout.slice(0, 7));
-
-    return ResultAsync.combine([current, latest]).andThen(([currentCommit, latestCommit]) => {
-        return currentCommit === latestCommit
-            ? ok(undefined)
-            : err(new Error(`The current commit (${currentCommit}) is not the latest commit on the remote branch (${latestCommit}). Please pull the latest changes before running this command.`));
     });
 }
