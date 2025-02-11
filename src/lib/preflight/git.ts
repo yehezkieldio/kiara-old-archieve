@@ -6,8 +6,8 @@ import { Octokit } from "octokit";
 export async function preflightGit(): Promise<void> {
     await checkGitRepository();
     await checkTokenScopes();
-    // await checkUncommittedChanges();
-    // await checkReleaseBranch();
+    await checkUncommittedChanges();
+    await checkReleaseBranch();
     await checkLatestCommit();
 }
 
@@ -69,12 +69,10 @@ export async function checkLatestCommit(): Promise<void> {
     const releaseBranch = config.releaseBranch ?? "master";
 
     try {
-        // Get current commit hash
         const { stdout: currentCommit } = await execa("git", ["rev-parse", "HEAD"], {
             cwd: process.cwd(),
         });
 
-        // Get latest commit hash from release branch
         const { stdout: latestCommit } = await execa("git", ["rev-parse", releaseBranch], {
             cwd: process.cwd(),
         });
