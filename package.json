@@ -1,0 +1,37 @@
+{
+    "name": "@amarislabs/kiara",
+    "type": "module",
+    "version": "1.0.0",
+    "exports": {
+        ".": {
+            "types": "./src/index.ts",
+            "import": "./src/index.ts"
+        }
+    },
+    "main": "src/index.ts",
+    "module": "src/cli.ts",
+    "bin": {
+        "kiara": "./src/cli.ts"
+    },
+    "scripts": {
+        "lint": "eslint .",
+        "lint:fix": "eslint . --fix"
+    },
+    "peerDependencies": {
+        "typescript": "^5.0.0"
+    },
+    "dependencies": {
+        "c12": "^2.0.1",
+        "commander": "^13.1.0",
+        "consola": "^3.4.0",
+        "execa": "^9.5.2",
+        "octokit": "^4.1.1",
+        "type-fest": "^4.34.1"
+    },
+    "devDependencies": {
+        "@antfu/eslint-config": "^4.2.0",
+        "@types/bun": "latest",
+        "eslint": "^9.20.0",
+        "git-cliff": "^2.8.0"
+    }
+}
