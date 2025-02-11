@@ -2,7 +2,7 @@
     "name": "@amarislabs/kiara",
     "type": "module",
     "version": "1.0.0",
-    "description": "A versatile release orchestrator CLI for managing releases, versioning, and changelog generation.",
+    "description": "A CLI orchestrator for managing releases, versioning, and changelog generation.",
     "exports": {
         ".": {
             "types": "./src/index.ts",
