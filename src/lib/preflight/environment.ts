@@ -31,7 +31,7 @@ async function checkGitCliffConfig(): Promise<void> {
     }
 }
 
-async function checkConfig() {
+async function checkConfig(): Promise<void> {
     if (!await configExists()) {
         logger.error("Could not find a kiara.config.js or kiara.config.ts in the current working directory.");
         process.exit(1);

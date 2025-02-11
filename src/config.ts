@@ -1,13 +1,12 @@
-import { fileExists } from "#/lib/utils/file-exists";
-import { currentWorkingDirectory } from "#/lib/constants";
-import { join } from "node:path";
 import type { KiaraConfig } from "#/types/config";
+import { join } from "node:path";
+import { currentWorkingDirectory } from "#/lib/constants";
+import { fileExists } from "#/lib/utils/file-exists";
 import { loadConfig } from "c12";
 
 const { config } = await loadConfig<KiaraConfig>({
     name: "kiara",
 });
-
 
 export async function configExists(): Promise<boolean> {
     const extensions = [".js", ".ts", ".mjs", ".cjs", ".mts", ".cts", ".json"] as string[];
