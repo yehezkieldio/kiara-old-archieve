@@ -17,7 +17,7 @@ export async function checkGitRepository(): Promise<void> {
     }
     catch (error) {
         logger.verbose(error);
-        logger.error("Could not find a git repository in the current working directory. Please run kiara in a git repository.");
+        logger.error("Could not find a git repository in the current working directory.");
     }
 }
 
@@ -44,13 +44,13 @@ export async function checkUncommittedChanges(): Promise<void> {
     try {
         const { stdout } = await execa("git", ["status", "--porcelain"], { cwd: process.cwd() });
         if (stdout) {
-            logger.error("There are uncommitted changes in the current working directory. Please commit or stash your changes before running kiara.");
+            logger.error("There are uncommitted changes in the current working directory.");
             process.exit(1);
         }
     }
     catch (error) {
         logger.verbose(error);
-        logger.error("Failed to check git status. Please ensure you are in a git repository.");
+        logger.error("Failed to check git status. Run with verbose flag for more information.");
         process.exit(1);
     }
 }
@@ -87,7 +87,7 @@ export async function checkLatestCommit(): Promise<void> {
     }
     catch (error) {
         logger.verbose(error);
-        logger.error(`Could not get the latest commit on ${config.releaseBranch}`);
+        logger.error(`Could not get the latest commit on ${config.releaseBranch}, run with verbose flag for more information.`);
         process.exit(1);
     }
 }
