@@ -2,7 +2,7 @@
 
 import { internal } from "#/lib/internal";
 import { color, logger } from "#/lib/logger";
-import { handleError } from "#/lib/utils/util";
+import { handleError } from "#/lib/utils";
 import { initializeContext } from "#/tasks/initialize-context";
 import { verifyConditions } from "#/tasks/verify-conditions";
 import { program } from "commander";

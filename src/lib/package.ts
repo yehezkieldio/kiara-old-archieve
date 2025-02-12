@@ -1,6 +1,6 @@
 import type { PackageJson } from "type-fest";
 import { logger } from "#/lib/logger";
-import { memoize } from "#/lib/utils/util";
+import { memoize } from "#/lib/utils";
 import { ResultAsync } from "neverthrow";
 
 function loadPackageManifest(path: string): ResultAsync<PackageJson, Error> {

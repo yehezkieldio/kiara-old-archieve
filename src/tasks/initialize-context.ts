@@ -4,7 +4,7 @@ import { currentPackageJsonPath } from "#/lib/constants";
 import { getLatestGitTag } from "#/lib/git";
 import { logger } from "#/lib/logger";
 import { packageMetadata } from "#/lib/package";
-import { memoize } from "#/lib/utils/util";
+import { memoize } from "#/lib/utils";
 import { loadConfig } from "c12";
 import { ResultAsync } from "neverthrow";
 
