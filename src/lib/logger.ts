@@ -167,12 +167,17 @@ function characterFormat(str: string): string {
 }
 
 function formatPayload(payload: LogObject, opts: FormatOptions): string {
-    const [message, ...additional] = formatArgs(payload.args, opts).split("\n");
+    let [message, ...additional] = formatArgs(payload.args, opts).split("\n");
 
     const date: string = formatTimestamp(payload.date);
     const isLogType: boolean = payload.type === "log";
     const isBadge: boolean = (payload.badge as boolean) ?? payload.level < 2;
     const type: string = isLogType ? "" : formatType(payload, isBadge);
+
+    if (payload.type === "verbose" || payload.tag) {
+        message = color.gray(message);
+        additional = additional.map(line => color.gray(line));
+    }
 
     let line: string;
     const format: string = isLogType
