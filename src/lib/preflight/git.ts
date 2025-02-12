@@ -1,10 +1,10 @@
-import config from "#/config";
+import type { KiaraContext } from "#/tasks/initialize-context";
 import { token } from "#/lib/utils/git";
 import { execa } from "execa";
 import { err, ok, ResultAsync } from "neverthrow";
 import { Octokit } from "octokit";
 
-export function preflightGit(): ResultAsync<void, Error> {
+export function preflightGit(context: KiaraContext): ResultAsync<void, Error> {
     if (process.env.KIARA_TEST === "true") {
         return ResultAsync.fromPromise(
             new Promise<void>(resolve => setTimeout(resolve, 100)),
@@ -15,7 +15,7 @@ export function preflightGit(): ResultAsync<void, Error> {
     return checkGitRepository()
         .andThen(() => checkTokenScopes())
         .andThen(() => checkUncommittedChanges())
-        .andThen(() => checkReleaseBranch());
+        .andThen(() => checkReleaseBranch(context));
 }
 
 function checkGitRepository(): ResultAsync<void, Error> {
@@ -59,8 +59,8 @@ function checkUncommittedChanges(): ResultAsync<void, Error> {
     });
 }
 
-function checkReleaseBranch(): ResultAsync<void, Error> {
-    const releaseBranch = config.releaseBranch || "master";
+function checkReleaseBranch(context: KiaraContext): ResultAsync<void, Error> {
+    const releaseBranch = context.config.releaseBranch || "master";
 
     return ResultAsync.fromPromise(
         execa("git", ["rev-parse", "--abbrev-ref", "HEAD"]),
