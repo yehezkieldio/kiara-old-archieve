@@ -28,11 +28,14 @@
         "execa": "^9.5.2",
         "neverthrow": "^8.1.1",
         "octokit": "^4.1.1",
+        "semver": "^7.7.1",
         "type-fest": "^4.34.1"
     },
     "devDependencies": {
         "@antfu/eslint-config": "^4.2.0",
+        "@commander-js/extra-typings": "^13.1.0",
         "@types/bun": "latest",
+        "@types/semver": "^7.5.8",
         "eslint": "^9.20.0",
         "git-cliff": "^2.8.0"
     }

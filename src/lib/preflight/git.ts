@@ -5,6 +5,13 @@ import { err, ok, ResultAsync } from "neverthrow";
 import { Octokit } from "octokit";
 
 export function preflightGit(): ResultAsync<void, Error> {
+    if (process.env.KIARA_TEST === "true") {
+        return ResultAsync.fromPromise(
+            new Promise<void>(resolve => setTimeout(resolve, 100)),
+            () => new Error("Error during preflight check."),
+        );
+    }
+
     return checkGitRepository()
         .andThen(() => checkTokenScopes())
         .andThen(() => checkUncommittedChanges())

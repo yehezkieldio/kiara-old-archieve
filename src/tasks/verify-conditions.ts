@@ -1,17 +1,22 @@
-import type { ResultAsync } from "neverthrow";
+import type { KiaraContext } from "#/tasks/initialize-context";
 import { logger } from "#/lib/logger";
 import { preflightEnvironment } from "#/lib/preflight/environment";
 import { preflightGit } from "#/lib/preflight/git";
-import { ok } from "neverthrow";
+import { selectVersionStrategy } from "#/tasks/select-version-strategy";
+import { okAsync, ResultAsync } from "neverthrow";
 
-export function verifyConditions(): ResultAsync<void, Error> {
-    return preflightEnvironment()
-        .andThen(() => {
-            logger.withTag("PREFLIGHT").info("Preflight environment checks passed.");
-            return preflightGit();
+const preflightLog = logger.withTag("PREFLIGHT");
+
+export function verifyConditions(context: KiaraContext): ResultAsync<void, Error> {
+    if (context.options.skipVerify) {
+        preflightLog.info("Skipping preflight checks.");
+        return okAsync(undefined).andThen(() => selectVersionStrategy(context));
+    }
+
+    return ResultAsync.combine([preflightEnvironment(), preflightGit()])
+        .map(() => {
+            preflightLog.info("Preflight checks passed.");
+            return undefined;
         })
-        .andThen(() => {
-            logger.withTag("PREFLIGHT").info("Preflight git checks passed.");
-            return ok(undefined);
-        });
+        .andThen(() => selectVersionStrategy(context));
 }
