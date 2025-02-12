@@ -6,13 +6,6 @@ import { err, ok, ResultAsync } from "neverthrow";
 import { Octokit } from "octokit";
 
 export function preflightGit(context: KiaraContext): ResultAsync<void, Error> {
-    if (context.options.skipVerify) {
-        return ResultAsync.fromPromise(
-            new Promise<void>(resolve => setTimeout(resolve, 100)),
-            () => new Error("Error during preflight check."),
-        );
-    }
-
     return checkGitRepository()
         .andThen(() => checkTokenScopes())
         .andThen(() => checkUncommittedChanges())
@@ -20,12 +13,10 @@ export function preflightGit(context: KiaraContext): ResultAsync<void, Error> {
 }
 
 function checkGitRepository(): ResultAsync<void, Error> {
-    const exits = ResultAsync.fromPromise(
+    return ResultAsync.fromPromise(
         execa("git", ["rev-parse", "--is-inside-work-tree"]),
-        error => new Error(`Error checking if git repository exists: ${error}`),
-    );
-
-    return exits.andTee(({ command }) => logger.verbose(command)).andThen((result) => {
+        error => new Error(`Error checking for git repository: ${error}`),
+    ).andTee(({ command }) => logger.verbose(command)).andThen((result) => {
         return result.stdout === "true"
             ? ok(undefined)
             : err(new Error("Could not find a git repository in the current working directory."));
