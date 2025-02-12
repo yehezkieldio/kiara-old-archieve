@@ -8,7 +8,7 @@ import { okAsync, ResultAsync } from "neverthrow";
 export function verifyConditions(context: KiaraContext): ResultAsync<void, Error> {
     if (context.options.skipVerify) {
         return okAsync(undefined)
-            .andTee(() => logger.info("Skipping preflight checks due to --skip-verify flag."))
+            .andTee(() => logger.info("Skipping preflight checks due to --skip-verify flag, this may cause unexpected behavior."))
             .andThen(() => selectVersionStrategy(context));
     }
 
