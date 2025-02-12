@@ -21,10 +21,10 @@ program
     .description(internal.description!)
     .version(internal.version!, "-v, --version", "Output the current version of kiara.")
     .option("-V, --verbose", "Enable verbose logging for debugging purposes.", false)
-    .option("--name", "The name of the package to release, defaults to the name in package.json.")
+    .option("-n --name", "The name of the package to release, defaults to the name in package.json.")
     .option("-s --skip-bump", "Skip the version bump step, ideal for first-time releases.", false)
     .option("-d --dry-run", "Run kiara without making any changes to the repository.", false)
-    .option("-n --skip-verify", "Skip the verification step, useful for debugging.", false)
+    .option("-k --skip-verify", "Skip the verification step, useful for debugging.", false)
     .action(async (): Promise<void> => {
         logger.info(`Running kiara version ${color.dim(internal.version!)}`);
 
