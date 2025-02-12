@@ -33,7 +33,7 @@ program
 
 function run(): ResultAsync<void, Error> {
     return ResultAsync.fromPromise(
-        new Promise<void>((resolve) => {
+        new Promise<void>((resolve, reject) => {
             program.action(async (): Promise<void> => {
                 logger.info(`Running kiara version ${color.dim(internal.version!)}`);
 
@@ -45,15 +45,12 @@ function run(): ResultAsync<void, Error> {
 
                 logger.verbose(`Options: ${JSON.stringify(options)}`);
 
-                await initializeContext(options).andThen(verifyConditions).map(() => resolve()).mapErr((error) => {
-                    handleError(error);
-                    resolve();
-                });
+                await initializeContext(options).andThen(verifyConditions).map(() => resolve()).mapErr(error => reject(error));
             });
 
             program.parse(process.argv);
         }),
-        error => new Error(String(error)),
+        error => error instanceof Error ? error : new Error(String(error)),
     );
 }
 
