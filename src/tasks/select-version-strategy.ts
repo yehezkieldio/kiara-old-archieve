@@ -4,14 +4,14 @@ import { color, logger } from "#/lib/logger";
 import { getManualVersion } from "#/tasks/get-manual-version";
 import { getRecommendedVersion } from "#/tasks/get-recommended-version";
 import { updateContext } from "#/tasks/initialize-context";
-import { err, ResultAsync } from "neverthrow";
+import { err, errAsync, ResultAsync } from "neverthrow";
 
 export const VERSION_STRATEGY = {
-    RECOMMENDED_BUMP: "recommended-bump",
-    MANUAL_BUMP: "manual-bump",
+    RECOMMENDED_BUMP: "recommended",
+    MANUAL_BUMP: "manual",
 } as const;
 
-type VersionStrategy = typeof VERSION_STRATEGY[keyof typeof VERSION_STRATEGY];
+export type VersionStrategy = typeof VERSION_STRATEGY[keyof typeof VERSION_STRATEGY];
 
 const strategies = [
     {
@@ -29,6 +29,25 @@ const strategies = [
 export function selectVersionStrategy(context: KiaraContext): ResultAsync<void, Error> {
     logger.info(`Current version: ${color.dim(context.currentVersion)}`);
 
+    if (context.options.strategy) {
+        switch (context.options.strategy as VersionStrategy) {
+            case VERSION_STRATEGY.RECOMMENDED_BUMP:
+                return getRecommendedVersion(context)
+                    .map((version) => {
+                        updateContext(context, version);
+                        return undefined;
+                    });
+            case VERSION_STRATEGY.MANUAL_BUMP:
+                return getManualVersion(context)
+                    .map((version) => {
+                        updateContext(context, version);
+                        return undefined;
+                    });
+            default:
+                return errAsync(new Error(`Invalid version strategy selected: ${context.options.strategy}`));
+        }
+    }
+
     return ResultAsync.fromPromise(
         logger.prompt("Pick a version strategy", {
             type: "select",
@@ -41,13 +60,13 @@ export function selectVersionStrategy(context: KiaraContext): ResultAsync<void, 
         console.log("");
 
         switch (strategy as VersionStrategy) {
-            case "recommended-bump":
+            case VERSION_STRATEGY.RECOMMENDED_BUMP:
                 return getRecommendedVersion(context)
                     .map((version) => {
                         updateContext(context, version);
                         return undefined;
                     });
-            case "manual-bump":
+            case VERSION_STRATEGY.MANUAL_BUMP:
                 return getManualVersion(context)
                     .map((version) => {
                         updateContext(context, version);
