@@ -174,7 +174,7 @@ function formatPayload(payload: LogObject, opts: FormatOptions): string {
     const isBadge: boolean = (payload.badge as boolean) ?? payload.level < 2;
     const type: string = isLogType ? "" : formatType(payload, isBadge);
 
-    if (payload.type === "verbose" || payload.tag) {
+    if (payload.type === "verbose") {
         message = color.gray(message);
         additional = additional.map(line => color.gray(line));
     }
