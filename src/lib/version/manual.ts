@@ -20,18 +20,20 @@ interface VersionContext {
     //     preReleaseBase?: string;
     // };
 }
-interface Choice {
+
+export interface SelectOption {
     label: string;
     value: string;
-}
+    hint?: string;
+};
 
-export function getIncrementChoices(context: VersionContext): Choice[] {
+export function getIncrementChoices(context: VersionContext): SelectOption[] {
     const types = CHOICES.default as ReleaseType[];
 
     const choices = types.map(increment => ({
         label: `${increment} (${semver.inc(context.latestVersion, increment)})`,
         value: semver.inc(context.latestVersion, increment) as string,
-        hint: semver.inc(context.latestVersion, increment),
+        hint: semver.inc(context.latestVersion, increment) as string,
     }));
 
     return choices;
