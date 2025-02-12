@@ -4,10 +4,12 @@ import type { VersionStrategy } from "#/tasks/select-version-strategy";
 import { internal } from "#/lib/internal";
 import { color, logger } from "#/lib/logger";
 import { handleError } from "#/lib/utils";
+import { parseVersionStrategy } from "#/lib/version";
 import { initializeContext } from "#/tasks/initialize-context";
 import { verifyConditions } from "#/tasks/verify-conditions";
 import { program } from "commander";
 import { LogLevels } from "consola";
+import { ResultAsync } from "neverthrow";
 
 export interface KiaraOptions {
     verbose: boolean;
@@ -21,25 +23,41 @@ export interface KiaraOptions {
 program
     .name("kiara")
     .description(internal.description!)
-    .version(internal.version!, "-v, --version", "Output the current version of kiara.")
-    .option("-V, --verbose", "Enable verbose logging for debugging purposes.", false)
+    .version(internal.version!, "-V, --version", "Output the current version of kiara.")
+    .option("-v, --verbose", "Enable verbose logging for debugging purposes.", false)
     .option("-n --name [string]", "The name of the package to release, defaults to the name in package.json.")
-    .option("-s --strategy [string]", "The version bump strategy to use, either 'recommended' or 'manual'.", "")
+    .option("-s --strategy [string]", "The version bump strategy to use, either 'recommended' or 'manual'.", parseVersionStrategy, "")
     .option("--skip-bump", "Skip the version bump step, ideal for first-time releases.", false)
     .option("--dry-run", "Run kiara without making any changes to the repository.", false)
-    .option("--skip-verify", "Skip the verification step, useful for debugging.", false)
-    .action(async (): Promise<void> => {
-        logger.info(`Running kiara version ${color.dim(internal.version!)}`);
+    .option("--skip-verify", "Skip the verification step, useful for debugging.", false);
 
-        const options = program.opts() as KiaraOptions;
+function run(): ResultAsync<void, Error> {
+    return ResultAsync.fromPromise(
+        new Promise<void>((resolve) => {
+            program.action(async (): Promise<void> => {
+                logger.info(`Running kiara version ${color.dim(internal.version!)}`);
 
-        if (options.verbose) {
-            logger.level = LogLevels.verbose;
-        }
+                const options = program.opts() as KiaraOptions;
 
-        logger.verbose(`Options: ${JSON.stringify(options)}`);
+                if (options.verbose) {
+                    logger.level = LogLevels.verbose;
+                }
 
-        await initializeContext(options).andThen(verifyConditions).mapErr(handleError);
-    });
+                logger.info(`Options: ${JSON.stringify(options)}`);
 
-program.parse(Bun.argv);
+                await initializeContext(options).andThen(verifyConditions).map(() => resolve()).mapErr((error) => {
+                    handleError(error);
+                    resolve();
+                });
+            });
+
+            program.parse(process.argv);
+        }),
+        error => new Error(String(error)),
+    );
+}
+
+run().match(
+    () => process.exit(0),
+    (error: Error) => handleError(error),
+);
