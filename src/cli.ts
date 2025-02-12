@@ -43,7 +43,7 @@ function run(): ResultAsync<void, Error> {
                     logger.level = LogLevels.verbose;
                 }
 
-                logger.info(`Options: ${JSON.stringify(options)}`);
+                logger.verbose(`Options: ${JSON.stringify(options)}`);
 
                 await initializeContext(options).andThen(verifyConditions).map(() => resolve()).mapErr((error) => {
                     handleError(error);
