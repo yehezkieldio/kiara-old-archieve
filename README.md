@@ -86,7 +86,7 @@ The available CLI flags are as follows:
 - `--skip-verify`: Skip conditions verification. Default is false.
 - `--skip-push`: Skip remote repository push. Default is false.
 - `-b, --bump-strategy`: Specify to use recommended version bump according to commit messages or manual version bump. Default is empty, which prompts for version bump strategy.
-- `--github-token`: GitHub token for creating releases. Default is empty.
+- `--github-token`: GitHub token for pushing changes and creating releases. Default is empty.
 
 > [!WARNING]
 > CLI flags take precedence over configuration file settings. If a flag is provided, it will override the corresponding option in the `kiara.config.ts` file. Some settings are only configurable via the configuration file and cannot be set through flags.

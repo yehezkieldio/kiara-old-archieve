@@ -168,6 +168,13 @@ export interface KiaraBumpOptions {
      * @default 'manual'
      */
     bumpStrategy?: BumpStrategy;
+
+    /**
+     * The authentication token to use for GitHub API requests.
+     * Availabe as an option: --github-token or -t
+     * @default ""
+     */
+    githubToken?: string;
 }
 
 export interface KiaraContext {
