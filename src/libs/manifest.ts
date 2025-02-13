@@ -10,17 +10,17 @@ function loadPackageJson(path: string): ResultAsync<PackageJson, Error> {
 }
 
 function getPackageName(pkg: PackageJson): Result<string, Error> {
-    const name = pkg.name ?? "";
+    const name: string = pkg.name ?? "";
     return name ? ok(name) : err(new Error("Package name not found"));
 }
 
 function getPackageDescription(pkg: PackageJson): Result<string, Error> {
-    const description = pkg.description ?? "";
+    const description: string = pkg.description ?? "";
     return description ? ok(description) : err(new Error("Package description not found"));
 }
 
 function getPackageVersion(pkg: PackageJson): Result<string, Error> {
-    const version = pkg.version ?? "";
+    const version: string = pkg.version ?? "";
     return version
         ? ok(version)
         : err(new Error("Package version not found in package.json! Please add a version field."));
