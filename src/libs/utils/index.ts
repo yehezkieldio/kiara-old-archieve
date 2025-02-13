@@ -1,5 +1,6 @@
+import { CWD_PACKAGE_JSON_PATH } from "#/libs/constants";
 import { logger } from "#/libs/logger";
-import { Result, ResultAsync } from "neverthrow";
+import { ok, Result, ResultAsync } from "neverthrow";
 
 /**
  * Detects the indentation of a JSON file at the specified path.
@@ -25,7 +26,9 @@ export function fileExists(path: string): ResultAsync<boolean, Error> {
 }
 
 /**
- * Wraps JSON.stringify in a Result to catch any errors that may occur.
+ * Takes an object and returns a JSON string.
+ * @param obj - The object to format.
+ * @returns A promise that resolves to the formatted JSON string.
  */
 export const safeJsonStringify = Result.fromThrowable(JSON.stringify);
 
@@ -36,4 +39,27 @@ export const safeJsonStringify = Result.fromThrowable(JSON.stringify);
 export function handleError(error: Error): void {
     logger.error(error.message);
     process.exit(1);
+}
+
+/**
+ * Takes an object and returns a formatted JSON string with an indentation that matches the package.json file.
+ * @param obj - The object to format.
+ * @returns A promise that resolves to the formatted JSON string.
+ */
+export async function formatObject(obj: unknown): Promise<string> {
+    const indentation: ResultAsync<string, Error> = ResultAsync.fromPromise(
+        detectJsonIndentation(CWD_PACKAGE_JSON_PATH),
+        (error: unknown): Error => new Error(`Failed to detect indentation: ${error}`),
+    );
+
+    return indentation.andThen(
+        (indent: string): Result<string, unknown> => safeJsonStringify(obj, null, indent).map(
+            line => line.replace(/"([^"]+)":/g, "$1:"),
+        ),
+    ).andThen((json: string): Result<string, never> => ok(json)).match(
+        (value: string): string => value,
+        (error: unknown): never => {
+            throw new Error(`Failed to format object: ${error}`);
+        },
+    );
 }

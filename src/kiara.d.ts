@@ -23,7 +23,7 @@ export interface KiaraConfig {
         /**
          * List of allowed branch names for creating releases.
          * Only used when requireBranch is true.
-         * @default 'master' | [/^v\d+\.\d+\.\d+$/, 'master', 'main', 'next']
+         * @default 'master' | ['master', 'main']
          */
         branches?: string | string[];
 
@@ -88,7 +88,7 @@ export interface KiaraConfig {
         /**
          * The release name to use when creating a release on GitHub.
          * If not provided, the release will use the version as the name.
-         * @default 'vX.X.X'
+         * @default 'v{{version}}'
          */
         releaseName?: string;
     };
@@ -111,7 +111,7 @@ export interface KiaraConfig {
 /**
  * CLI options for Kiara.
  */
-export interface KiaraOptions {
+export interface KiaraBumpOptions {
     /**
      * Whether to run in verbose mode, printing additional information.
      * @default false
