@@ -39,7 +39,7 @@ program
     .option("--skip-changelog", "Skip the changelog generation step", false)
     .option("--skip-verify", "Skip the conditions verification step", false)
     .option("--skip-push", "Skip the push step to the remote repository", false)
-    .option("-b, --bump-strategy [string]", "Version bump strategy (recommended|manual)", "manual")
+    .option("-b, --bump-strategy [string]", "Version bump strategy (recommended|manual)", "")
     .action(async (options: KiaraBumpOptions): Promise<void> => {
         return new Promise<void>((): ResultAsync<void, void> => initializeBump(options).mapErr(handleError));
     })

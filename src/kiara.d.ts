@@ -4,13 +4,6 @@ export type BumpStrategy = "recommended" | "manual";
  * File configuration for Kiara.
  */
 export interface KiaraConfig {
-    /**
-     * Version bump strategy to use, either 'recommended' or 'manual'.
-     * Recommended will use the recommended version bump based on the commit messages, while manual will prompt the user to select the version bump.
-     * @default 'manual'
-     */
-    bumpStrategy?: BumpStrategy;
-
     git?: {
         /**
          * Whether to enforce releasing only on specific branches.

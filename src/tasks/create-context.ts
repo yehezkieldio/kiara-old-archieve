@@ -24,13 +24,34 @@ export function createContext(options: KiaraBumpOptions): ResultAsync<KiaraConte
         ([currentVersion, name, config]: [string, string, KiaraConfig]): KiaraContext => ({
             currentVersion,
             nextVersion: options.skipBump ? currentVersion : "",
-            config,
+            config: mergeConfig(config, options),
             options: {
                 name: options.name ?? name,
                 ...options,
             },
         })
     );
+}
+
+function mergeConfig(baseConfig: KiaraConfig, options: KiaraBumpOptions): KiaraConfig {
+    return {
+        ...baseConfig,
+        git: options.skipPush
+            ? {
+                  ...baseConfig.git,
+                  pushCommits: {
+                      ...baseConfig.git?.pushCommits,
+                      enabled: false,
+                  },
+              }
+            : baseConfig.git,
+        changelog: options.skipChangelog
+            ? {
+                  ...baseConfig.changelog,
+                  enabled: false,
+              }
+            : baseConfig.changelog,
+    };
 }
 
 export function updateNextVersion(context: KiaraContext, nextVersion: string): KiaraContext {
