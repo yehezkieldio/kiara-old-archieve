@@ -1,12 +1,13 @@
 #!/usr/bin/env bun
 
 import type { Command } from "commander";
-import { color } from "#/libs/logger";
+import { color, logger } from "#/libs/logger";
 import { internal } from "#/libs/manifest";
 import { handleError } from "#/libs/utils";
 import { initializeBump } from "#/tasks/initialize-bump";
 import { initializeDefaultConfiguration } from "#/tasks/initialize-default-configuration";
 import { createCommand } from "commander";
+import { LogLevels } from "consola";
 
 const program: Command = createCommand();
 const afterText: string = `\nFor more information, visit the repository at ${internal.repository}.`;
@@ -40,5 +41,11 @@ program
     .option("-b, --bump-strategy [string]", "Version bump strategy (recommended|manual)", "manual")
     .action(async () => new Promise<void>(() => initializeBump().mapErr(handleError)))
     .addHelpText("after", afterText);
+
+program.on("option:verbose", () => {
+    if (program.opts().verbose) {
+        logger.level = LogLevels.verbose;
+    }
+});
 
 program.parse(Bun.argv);
