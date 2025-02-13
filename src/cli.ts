@@ -1,15 +1,15 @@
 #!/usr/bin/env bun
 
-import type { KiaraBumpOptions } from "#/kiara";
 import type { Command } from "commander";
+import { createCommand } from "commander";
+import { LogLevels } from "consola";
 import type { ResultAsync } from "neverthrow";
+import type { KiaraBumpOptions } from "#/kiara";
 import { internal } from "#/libs/internal";
 import { color, logger } from "#/libs/logger";
 import { handleError } from "#/libs/utils";
 import { initializeBump } from "#/tasks/initialize-bump";
 import { initializeDefaultConfiguration } from "#/tasks/initialize-default-configuration";
-import { createCommand } from "commander";
-import { LogLevels } from "consola";
 
 const program: Command = createCommand();
 const afterText: string = `\nFor more information, visit the repository at ${internal.repository}.`;

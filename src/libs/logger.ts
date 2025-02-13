@@ -1,10 +1,10 @@
 // TODO: Move this into it's own package because I'm fond of it and I want to use it in other projects.
 
-import type { ConsolaInstance, ConsolaOptions, FormatOptions, LogObject, LogType } from "consola";
-import type { ColorFunction, ColorName } from "consola/utils";
 import { sep } from "node:path";
 import { formatWithOptions } from "node:util";
+import type { ConsolaInstance, ConsolaOptions, FormatOptions, LogObject, LogType } from "consola";
 import { createConsola } from "consola";
+import type { ColorFunction, ColorName } from "consola/utils";
 import { colors, stripAnsi } from "consola/utils";
 
 export const color = colors;
@@ -58,7 +58,7 @@ function parseStack(stack: string): string[] {
     const lines: string[] = stack
         .split("\n")
         .splice(1)
-        .map(l => l.trim().replace("file://", "").replace(cwd, ""));
+        .map((l) => l.trim().replace("file://", "").replace(cwd, ""));
 
     return lines;
 }
@@ -67,8 +67,8 @@ function formatStack(stack: string, opts: FormatOptions): string {
     const indent = "  ".repeat((opts?.errorLevel || 0) + 1);
     return `\n${indent}${parseStack(stack)
         .map(
-            line =>
-                `  ${line.replace(AT_TRACE_PATTERN, m => color.gray(m)).replace(PARENTHESES_CONTENT_PATTERN, (_, m) => `(${color.cyan(m)})`)}`,
+            (line) =>
+                `  ${line.replace(AT_TRACE_PATTERN, (m) => color.gray(m)).replace(PARENTHESES_CONTENT_PATTERN, (_, m) => `(${color.cyan(m)})`)}`
         )
         .join(`\n${indent}`)}`;
 }
@@ -97,7 +97,10 @@ function formatTimestamp(date: Date): string {
         minute: "2-digit",
         second: "2-digit",
         hour12: false,
-    }).format(date).replace(/\./g, "/").replace(",", "");
+    })
+        .format(date)
+        .replace(/\./g, "/")
+        .replace(",", "");
 
     return color.gray(`[${_date}]`);
 }
@@ -119,8 +122,7 @@ function formatType(payload: LogObject, isBadge: boolean): string {
         typeColor = "gray";
         prefix = payload.tag.toUpperCase();
         formatter = createTextStyle(prefix, typeColor);
-    }
-    else {
+    } else {
         typeColor = TYPE_COLOR_MAP[payload.type] as ColorName;
         prefix = TYPE_PREFIX[payload.type] || payload.type.toUpperCase();
 
@@ -139,8 +141,8 @@ function formatType(payload: LogObject, isBadge: boolean): string {
             "verbose",
         ];
 
-        const useBadge: boolean
-            = ["fatal", "fail"].includes(payload.type) || (!simpleTextTypes.includes(payload.type) && isBadge);
+        const useBadge: boolean =
+            ["fatal", "fail"].includes(payload.type) || (!simpleTextTypes.includes(payload.type) && isBadge);
 
         formatter = useBadge ? createBadgeStyle(payload, typeColor) : createTextStyle(prefix, typeColor);
     }
@@ -178,7 +180,7 @@ function formatPayload(payload: LogObject, opts: FormatOptions): string {
 
     if (payload.type === "verbose") {
         message = color.gray(message);
-        additional = additional.map(line => color.gray(line));
+        additional = additional.map((line) => color.gray(line));
     }
 
     let line: string;
@@ -209,7 +211,7 @@ export const logger: ConsolaInstance = createConsola({
 
                 return writeStream(
                     `${line}\n`,
-                    logObj.level < 2 ? ctx.options.stderr || process.stderr : ctx.options.stdout || process.stdout,
+                    logObj.level < 2 ? ctx.options.stderr || process.stderr : ctx.options.stdout || process.stdout
                 );
             },
         },

@@ -16,8 +16,8 @@
         "kiara": "./src/cli.ts"
     },
     "scripts": {
-        "lint": "eslint .",
-        "lint:fix": "eslint . --fix"
+        "biome": "biome check .",
+        "biome:fix": "biome check . --write"
     },
     "peerDependencies": {
         "typescript": "^5.0.0"
@@ -33,10 +33,10 @@
         "type-fest": "^4.34.1"
     },
     "devDependencies": {
-        "@antfu/eslint-config": "^4.2.0",
+        "@biomejs/biome": "^1.9.4",
         "@types/bun": "latest",
         "@types/semver": "^7.5.8",
-        "eslint": "^9.20.0",
-        "git-cliff": "^2.8.0"
+        "git-cliff": "^2.8.0",
+        "ultracite": "^4.1.19"
     }
 }

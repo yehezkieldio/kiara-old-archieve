@@ -1,6 +1,6 @@
+import { Result, ResultAsync, ok } from "neverthrow";
 import { CWD_PACKAGE_JSON_PATH } from "#/libs/constants";
 import { logger } from "#/libs/logger";
-import { ok, Result, ResultAsync } from "neverthrow";
 
 /**
  * Detects the indentation of a JSON file at the specified path.
@@ -21,7 +21,7 @@ export async function detectJsonIndentation(path: string): Promise<string> {
 export function fileExists(path: string): ResultAsync<boolean, Error> {
     return ResultAsync.fromPromise(
         Bun.file(path).exists() as Promise<boolean>,
-        (error: unknown): Error => new Error(`Error checking if file exists: ${error}`),
+        (error: unknown): Error => new Error(`Error checking if file exists: ${error}`)
     );
 }
 
@@ -49,17 +49,19 @@ export function handleError(error: Error): void {
 export async function formatObject(obj: unknown): Promise<string> {
     const indentation: ResultAsync<string, Error> = ResultAsync.fromPromise(
         detectJsonIndentation(CWD_PACKAGE_JSON_PATH),
-        (error: unknown): Error => new Error(`Failed to detect indentation: ${error}`),
+        (error: unknown): Error => new Error(`Failed to detect indentation: ${error}`)
     );
 
-    return indentation.andThen(
-        (indent: string): Result<string, unknown> => safeJsonStringify(obj, null, indent).map(
-            line => line.replace(/"([^"]+)":/g, "$1:"),
-        ),
-    ).andThen((json: string): Result<string, never> => ok(json)).match(
-        (value: string): string => value,
-        (error: unknown): never => {
-            throw new Error(`Failed to format object: ${error}`);
-        },
-    );
+    return indentation
+        .andThen(
+            (indent: string): Result<string, unknown> =>
+                safeJsonStringify(obj, null, indent).map((line) => line.replace(/"([^"]+)":/g, "$1:"))
+        )
+        .andThen((json: string): Result<string, never> => ok(json))
+        .match(
+            (value: string): string => value,
+            (error: unknown): never => {
+                throw new Error(`Failed to format object: ${error}`);
+            }
+        );
 }
