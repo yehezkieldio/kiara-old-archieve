@@ -1,6 +1,7 @@
 import type { KiaraConfig } from "#/kiara";
 import { logger } from "#/libs/logger";
 import { formatObject } from "#/libs/utils";
+import { loadConfig } from "c12";
 import { okAsync, ResultAsync } from "neverthrow";
 
 export const DEFAULT_CONFIGURATION: KiaraConfig = {
@@ -32,11 +33,26 @@ export const DEFAULT_CONFIGURATION: KiaraConfig = {
 const configImport = `import { defineConfig } from "@amarislabs/kiara";`;
 const configExport = `export default defineConfig(${await formatObject(DEFAULT_CONFIGURATION)});`;
 
-export function initConfigFile(path: string): ResultAsync<void, Error> {
+function initKiaraConfig(path: string): ResultAsync<void, Error> {
     return ResultAsync.fromPromise(
         Bun.write(path, `${configImport}\n\n${configExport}`),
         (): Error => new Error("Failed to initialize config file"),
     )
         .andTee(() => logger.verbose(`Config file initialized at ${path}`))
         .andThen((): ResultAsync<undefined, never> => okAsync(void 0));
+}
+
+function loadKiaraConfig(): ResultAsync<KiaraConfig, Error> {
+    return ResultAsync.fromPromise(
+        loadConfig<KiaraConfig>({
+            name: "kiara",
+            defaults: DEFAULT_CONFIGURATION,
+        }),
+        error => new Error(`Failed to load config: ${error}`),
+    ).map(({ config }) => config);
+}
+
+export const config = {
+    init: initKiaraConfig,
+    load: loadKiaraConfig,
 }
