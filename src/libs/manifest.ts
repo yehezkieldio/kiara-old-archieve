@@ -23,7 +23,7 @@ function getPackageDescription(pkg: PackageJson): ResultAsync<string, Error> {
 function getPackageVersion(pkg: PackageJson): ResultAsync<string, Error> {
     return ResultAsync.fromPromise(
         Promise.resolve(pkg.version ?? ""),
-        (): Error => new Error("Package version not found")
+        (): Error => new Error("A version was not found in the package.json, please add one")
     );
 }
 

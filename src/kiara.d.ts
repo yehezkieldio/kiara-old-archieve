@@ -167,3 +167,10 @@ export interface KiaraBumpOptions {
      */
     bumpStrategy?: BumpStrategy;
 }
+
+export interface KiaraContext {
+    currentVersion: string;
+    nextVersion: string;
+    config: KiaraConfig;
+    options: KiaraBumpOptions;
+}
