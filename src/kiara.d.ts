@@ -107,48 +107,56 @@ export interface KiaraConfig {
 export interface KiaraBumpOptions {
     /**
      * Whether to run in verbose mode, printing additional information.
+     * Availabe as a flag: --verbose or -v
      * @default false
      */
     verbose?: boolean;
 
     /**
      * Whether to run in dry mode, where no changes are made.
+     * Availabe as a flag: --dry-run or -d
      * @default false
      */
     dryRun?: boolean;
 
     /**
      * The name of the project or package to release, defaults to the name in the package.json.
+     * Availabe as an option: --name or -n
      * @default package.json name
      */
     name?: string;
 
     /**
      * Whether to run in CI mode, where no user input is required.
+     * Availabe as a flag: --ci
      * @default false
      */
     ci?: boolean;
 
     /**
      * Whether to skip the version bump step.
+     * Availabe as a flag: --skip-bump
      * @default false
      */
     skipBump?: boolean;
 
     /**
      * Whether to skip the changelog generation step.
+     * Availabe as a flag: --skip-changelog
      * @default false
      */
     skipChangelog?: boolean;
 
     /**
      * Whether to skip the conditions verification step, may lead to unexpected results.
+     * Availabe as a flag: --skip-verify
      * @default false
      */
     skipVerify?: boolean;
 
     /**
      * Whether to skip pushing changes to the remote repository.
+     * Availabe as a flag: --skip-push
      * @default false
      */
     skipPush?: boolean;
@@ -156,6 +164,7 @@ export interface KiaraBumpOptions {
     /**
      * Version bump strategy to use, either 'recommended' or 'manual'.
      * Recommended will use the recommended version bump based on the commit messages, while manual will prompt the user to select the version bump.
+     * Availabe as an option: --bump-strategy or -b
      * @default 'manual'
      */
     bumpStrategy?: BumpStrategy;
