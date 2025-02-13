@@ -1,5 +1,5 @@
 import { ResultAsync, okAsync } from "neverthrow";
-import type { PackageJson } from "type-fest";
+import type { PackageJson } from "pkg-types";
 import { detectJsonIndentation, safeJsonStringify } from "#/libs/utils";
 
 function loadPackageJson(path: string): ResultAsync<PackageJson, Error> {
