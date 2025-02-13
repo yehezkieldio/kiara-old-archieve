@@ -2,12 +2,12 @@
 
 import type { Command } from "commander";
 import { color, logger } from "#/libs/logger";
-import { internal } from "#/libs/manifest";
 import { handleError } from "#/libs/utils";
 import { initializeBump } from "#/tasks/initialize-bump";
 import { initializeDefaultConfiguration } from "#/tasks/initialize-default-configuration";
 import { createCommand } from "commander";
 import { LogLevels } from "consola";
+import { internal } from "#/libs/internal";
 
 const program: Command = createCommand();
 const afterText: string = `\nFor more information, visit the repository at ${internal.repository}.`;

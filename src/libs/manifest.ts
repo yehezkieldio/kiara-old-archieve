@@ -1,6 +1,4 @@
-import type { BunFile } from "bun";
 import type { PackageJson } from "type-fest";
-import { KIARA_PACKAGE_PATH } from "#/libs/constants";
 import { detectJsonIndentation, safeJsonStringify } from "#/libs/utils";
 import { okAsync, ResultAsync } from "neverthrow";
 
@@ -63,7 +61,3 @@ export const manifest = {
     getVersion: getPackageVersion,
     updateVersion: updatePackageVersion,
 };
-
-const file: BunFile = Bun.file(KIARA_PACKAGE_PATH, { type: "application/json" });
-const contents = await file.json() as PackageJson;
-export const internal = contents as Required<PackageJson>;
