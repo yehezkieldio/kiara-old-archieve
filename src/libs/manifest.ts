@@ -49,7 +49,7 @@ function updatePackageVersion(path: string, version: string): ResultAsync<void, 
                             return Bun.write(path, formatted);
                         }),
                     (error: unknown): Error => new Error(`Failed to write package.json: ${error}`)
-                ).andThen((): ResultAsync<undefined, never> => okAsync(void 0));
+                ).andThen((): ResultAsync<undefined, never> => okAsync(undefined));
             })
     );
 }

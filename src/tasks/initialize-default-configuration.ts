@@ -15,6 +15,6 @@ export function initializeDefaultConfiguration(): ResultAsync<void, Error> {
         })
         .andThen(() => {
             logger.info(`Default ${file} created successfully at your project root.`);
-            return okAsync(void 0);
+            return okAsync(undefined);
         });
 }

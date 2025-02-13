@@ -39,7 +39,7 @@ function initKiaraConfig(path: string): ResultAsync<void, Error> {
         (): Error => new Error("Failed to initialize config file")
     )
         .andTee(() => logger.verbose(`Config file initialized at ${path}`))
-        .andThen((): ResultAsync<undefined, never> => okAsync(void 0));
+        .andThen((): ResultAsync<undefined, never> => okAsync(undefined));
 }
 
 function loadKiaraConfig(): ResultAsync<KiaraConfig, Error> {
