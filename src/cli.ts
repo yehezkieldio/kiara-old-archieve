@@ -1,60 +1,44 @@
 #!/usr/bin/env bun
 
-import type { VersionStrategy } from "#/tasks/select-version-strategy";
-import { internal } from "#/lib/internal";
-import { color, logger } from "#/lib/logger";
-import { handleError } from "#/lib/utils";
-import { parseVersionStrategy } from "#/lib/version";
-import { initializeContext } from "#/tasks/initialize-context";
-import { verifyConditions } from "#/tasks/verify-conditions";
-import { program } from "commander";
-import { LogLevels } from "consola";
-import { ResultAsync } from "neverthrow";
+import type { Command } from "commander";
+import { color } from "#/libs/logger";
+import { internal } from "#/libs/manifest";
+import { handleError } from "#/libs/utils";
+import { initializeBump } from "#/tasks/initialize-bump";
+import { initializeDefaultConfiguration } from "#/tasks/initialize-default-configuration";
+import { createCommand } from "commander";
 
-export interface KiaraOptions {
-    verbose: boolean;
-    name: string;
-    skipBump: boolean;
-    dryRun: boolean;
-    skipVerify: boolean;
-    strategy: VersionStrategy;
-}
+const program: Command = createCommand();
+const afterText: string = `\nFor more information, visit the repository at ${internal.repository}.`;
 
 program
     .name("kiara")
-    .description(internal.description!)
-    .version(internal.version!, "-V, --version", "Output the current version of kiara.")
-    .option("-v, --verbose", "Enable verbose logging for debugging purposes.", false)
-    .option("-n --name [string]", "The name of the package to release, defaults to the name in package.json.")
-    .option("-s --strategy [string]", "The version bump strategy to use, either 'recommended' or 'manual'.", parseVersionStrategy, "")
-    .option("--skip-bump", "Skip the version bump step, ideal for first-time releases.", false)
-    .option("--dry-run", "Run kiara without making any changes to the repository.", false)
-    .option("--skip-verify", "Skip the verification step, useful for debugging.", false);
+    .usage(color.dim("[command] [options]"))
+    .description(`${internal.description} ${color.dim(`(${internal.version})`)}`)
+    .version(internal.version, "-V, --version", "Print the version number.")
+    .helpOption("-h, --help", "Print this help message.")
+    .option("-v, --verbose", "Run in verbose mode, printing additional information")
+    .option("-d, --dry-run", "Run in dry mode, where no changes are made")
+    .action(() => program.help())
+    .addHelpText("after", afterText);
 
-function run(): ResultAsync<void, Error> {
-    return ResultAsync.fromPromise(
-        new Promise<void>((resolve, reject) => {
-            program.action(async (): Promise<void> => {
-                logger.info(`Running kiara version ${color.dim(internal.version!)}`);
+program
+    .command("init")
+    .description("Initialize a default kiara configuration.")
+    .action(async () => new Promise<void>(() => initializeDefaultConfiguration().mapErr(handleError)))
+    .addHelpText("after", afterText);
 
-                const options = program.opts() as KiaraOptions;
+program
+    .command("bump")
+    .description("Bump the version of the package.")
+    .option("-n, --name [string]", "Project or package name to release")
+    .option("-c, --ci", "Run in CI mode, where no user input is required")
+    .option("--skip-bump", "Skip the version bump step")
+    .option("--skip-changelog", "Skip the changelog generation step")
+    .option("--skip-verify", "Skip the conditions verification step")
+    .option("--skip-push", "Skip the push step to the remote repository")
+    .option("-b, --bump-strategy [string]", "Version bump strategy (recommended|manual)", "manual")
+    .action(async () => new Promise<void>(() => initializeBump().mapErr(handleError)))
+    .addHelpText("after", afterText);
 
-                if (options.verbose) {
-                    logger.level = LogLevels.verbose;
-                }
-
-                logger.verbose(`Options: ${JSON.stringify(options)}`);
-
-                await initializeContext(options).andThen(verifyConditions).map(() => resolve()).mapErr(error => reject(error));
-            });
-
-            program.parse(process.argv);
-        }),
-        error => error instanceof Error ? error : new Error(String(error)),
-    );
-}
-
-run().match(
-    () => process.exit(0),
-    (error: Error) => handleError(error),
-);
+program.parse(Bun.argv);

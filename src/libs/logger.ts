@@ -1,3 +1,5 @@
+// TODO: Move this into it's own package because I'm fond of it and I want to use it in other projects.
+
 import type { ConsolaInstance, ConsolaOptions, FormatOptions, LogObject, LogType } from "consola";
 import type { ColorFunction, ColorName } from "consola/utils";
 import { sep } from "node:path";
