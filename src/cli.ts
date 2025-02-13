@@ -34,7 +34,7 @@ program
     .command("bump")
     .description("Bump the version of the package.")
     .option("-n, --name [string]", "Project or package name to release", "")
-    .option("-c, --ci", "Run in CI mode, where no user input is required", false)
+    .option("--ci", "Run in CI mode, where no user input is required", false)
     .option("--skip-bump", "Skip the version bump step", false)
     .option("--skip-changelog", "Skip the changelog generation step", false)
     .option("--skip-verify", "Skip the conditions verification step", false)
