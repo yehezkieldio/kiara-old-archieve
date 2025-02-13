@@ -1,4 +1,4 @@
-import { ResultAsync, okAsync } from "neverthrow";
+import { type Result, ResultAsync, err, ok, okAsync } from "neverthrow";
 import type { PackageJson } from "pkg-types";
 import { detectJsonIndentation, safeJsonStringify } from "#/libs/utils";
 
@@ -9,22 +9,21 @@ function loadPackageJson(path: string): ResultAsync<PackageJson, Error> {
     );
 }
 
-function getPackageName(pkg: PackageJson): ResultAsync<string, Error> {
-    return ResultAsync.fromPromise(Promise.resolve(pkg.name ?? ""), (): Error => new Error("Package name not found"));
+function getPackageName(pkg: PackageJson): Result<string, Error> {
+    const name = pkg.name ?? "";
+    return name ? ok(name) : err(new Error("Package name not found"));
 }
 
-function getPackageDescription(pkg: PackageJson): ResultAsync<string, Error> {
-    return ResultAsync.fromPromise(
-        Promise.resolve(pkg.description ?? ""),
-        (): Error => new Error("Package description not found")
-    );
+function getPackageDescription(pkg: PackageJson): Result<string, Error> {
+    const description = pkg.description ?? "";
+    return description ? ok(description) : err(new Error("Package description not found"));
 }
 
-function getPackageVersion(pkg: PackageJson): ResultAsync<string, Error> {
-    return ResultAsync.fromPromise(
-        Promise.resolve(pkg.version ?? ""),
-        (): Error => new Error("A version was not found in the package.json, please add one")
-    );
+function getPackageVersion(pkg: PackageJson): Result<string, Error> {
+    const version = pkg.version ?? "";
+    return version
+        ? ok(version)
+        : err(new Error("Package version not found in package.json! Please add a version field."));
 }
 
 function updatePackageVersion(path: string, version: string): ResultAsync<void, Error> {
