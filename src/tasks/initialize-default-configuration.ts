@@ -1,8 +1,8 @@
 import type { ResultAsync } from "neverthrow";
+import { config } from "#/libs/config";
 import { CWD } from "#/libs/constants";
 import { logger } from "#/libs/logger";
 import { okAsync } from "neverthrow";
-import { config } from "#/libs/config";
 
 export function initializeDefaultConfiguration(): ResultAsync<void, Error> {
     const file = "kiara.config.ts";
