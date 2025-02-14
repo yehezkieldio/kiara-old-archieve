@@ -47,10 +47,12 @@ export function handleError(error: Error): void {
  * @returns A promise that resolves to the formatted JSON string.
  */
 export async function formatObject(obj: unknown): Promise<string> {
+    const DEFAULT_INDENT = "  ";
+
     const indentation: ResultAsync<string, Error> = ResultAsync.fromPromise(
         detectJsonIndentation(CWD_PACKAGE_JSON_PATH),
         (error: unknown): Error => new Error(`Failed to detect indentation: ${error}`)
-    );
+    ).orElse(() => ok(DEFAULT_INDENT));
 
     return indentation
         .andThen(

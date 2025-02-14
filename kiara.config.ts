@@ -1,10 +1,12 @@
 import { defineConfig } from "@amarislabs/kiara";
 
 export default defineConfig({
-    bumpStrategy: "manual",
     git: {
         requireBranch: false,
-        branches: ["master", "main"],
+        branches: [
+            "master",
+            "main"
+        ],
         requireCleanWorkingDir: true,
         requireCleanGitStatus: true,
         requireUpstream: true,
@@ -13,15 +15,15 @@ export default defineConfig({
             enabled: true,
             commitMessage: "chore: release {{name}}@{{version}}",
             tags: true,
-            tagName: "v{{version}}",
-        },
+            tagName: "v{{version}}"
+        }
     },
     github: {
         release: true,
-        releaseName: "v{{version}}",
+        releaseName: "v{{version}}"
     },
     changelog: {
         enabled: true,
-        path: "CHANGELOG.md",
-    },
+        path: "CHANGELOG.md"
+    }
 });

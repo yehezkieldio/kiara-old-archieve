@@ -7,14 +7,8 @@ import { logger } from "#/libs/logger";
 export function initializeDefaultConfiguration(): ResultAsync<void, Error> {
     const file = "kiara.config.ts";
 
-    return config
-        .init(`${CWD}/${file}`)
-        .mapErr((error) => {
-            logger.error(error.message);
-            return new Error("Failed to initialize default configuration");
-        })
-        .andThen(() => {
-            logger.info(`Default ${file} created successfully at your project root.`);
-            return okAsync(undefined);
-        });
+    return config.init(`${CWD}/${file}`).andThen(() => {
+        logger.info(`Default ${file} created successfully at your project root.`);
+        return okAsync(undefined);
+    });
 }

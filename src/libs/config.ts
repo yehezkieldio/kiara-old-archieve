@@ -5,7 +5,6 @@ import { logger } from "#/libs/logger";
 import { formatObject } from "#/libs/utils";
 
 export const DEFAULT_CONFIGURATION: KiaraConfig = {
-    bumpStrategy: "manual",
     git: {
         requireBranch: false,
         branches: ["master", "main"],
