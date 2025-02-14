@@ -5,7 +5,7 @@ export default defineConfig({
         requireBranch: false,
         branches: ["master", "main"],
         requireCleanWorkingDir: false,
-        requireCleanGitStatus: true,
+        requireCleanGitStatus: false,
         requireUpstream: true,
         requireCommits: true,
         pushCommits: {

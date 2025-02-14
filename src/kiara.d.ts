@@ -38,12 +38,6 @@ export interface KiaraConfig {
          */
         requireUpstream?: boolean;
 
-        /**
-         * Whether to stop the release if there are no commits since the last release.
-         * @default true
-         */
-        requireCommits?: boolean;
-
         pushCommits?: {
             /**
              * Whether to push commits to the remote repository.
