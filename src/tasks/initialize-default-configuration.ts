@@ -8,8 +8,8 @@ import { logger } from "#/libs/logger";
 export function initializeDefaultConfiguration(): ResultAsync<void, Error> {
     const file = "kiara.config.ts";
 
-    return config.init(join(CWD, file)).andThen(() => {
-        logger.info(`Default ${file} created successfully at your project root.`);
-        return okAsync(undefined);
-    });
+    return config
+        .init(join(CWD, file))
+        .andTee((): void => logger.info(`Config file initialized at ${file}`))
+        .andThen((): ResultAsync<undefined, never> => okAsync(undefined));
 }
