@@ -8,6 +8,7 @@ import { logger } from "#/libs/logger";
 export function preflightGit(context: KiaraContext): ResultAsync<void, Error> {
     return checkGitRepository()
         .andThen((): ResultAsync<void, Error> => checkUncommittedChanges(context))
+        .andThen((): ResultAsync<void, Error> => checkGitStatusClean(context))
         .andThen((): ResultAsync<void, Error> => checkReleaseBranch(context))
         .andThen((): ResultAsync<void, Error> => checkGithubToken(context));
 }
@@ -95,5 +96,22 @@ function checkReleaseBranch(context: KiaraContext): ResultAsync<void, Error> {
                           `You are not on a valid release branch. Please checkout the branch: ${releaseBranch} before running this command.`
                       )
                   );
+        });
+}
+
+function checkGitStatusClean(context: KiaraContext): ResultAsync<void, Error> {
+    if (context.config.git?.requireCleanGitStatus === false) {
+        return okAsync(undefined);
+    }
+
+    return ResultAsync.fromPromise(
+        execa("git", ["status", "--short"]),
+        (error) => new Error(`Error checking git status: ${error}`)
+    )
+        .andTee(({ command }): void => logger.verbose(`Checking git status: ${command}`))
+        .andThen((result) => {
+            return result.stdout === ""
+                ? ok(undefined)
+                : err(new Error("Dirty git status. Please commit or stash your changes before running this command."));
         });
 }
