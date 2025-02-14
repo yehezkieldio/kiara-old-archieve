@@ -7,9 +7,9 @@ import { fileExists } from "#/libs/utils";
 
 export function preflightEnvironment(context: KiaraContext): ResultAsync<void, Error> {
     return checkGithubToken(context)
-        .asyncAndThen((): ResultAsync<void, Error> => checkPackageJson())
-        .andThen((): ResultAsync<void, Error> => checkGitCliffConfig())
-        .andThen((): ResultAsync<void, Error> => checkKiaraConfig());
+        .asyncAndThen(checkPackageJson)
+        .andThen(checkGitCliffConfig)
+        .andThen(checkKiaraConfig);
 }
 
 function checkGithubToken(context: KiaraContext): Result<void, Error> {
