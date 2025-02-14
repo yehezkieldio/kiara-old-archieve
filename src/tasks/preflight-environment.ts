@@ -13,7 +13,7 @@ export function preflightEnvironment(context: KiaraContext): ResultAsync<void, E
 }
 
 function checkGithubToken(context: KiaraContext): Result<void, Error> {
-    if (context.config.github?.release) {
+    if (!context.config.github?.release) {
         return ok(undefined);
     }
 

@@ -25,7 +25,6 @@ After executing a bump command, Kiara will guide you through prompts and steps t
 | Verify Conditions      | Ensure the repository is in a clean state and all conditions are met. |
 | Determine Version Bump | Analyze commits for next version or prompt for a version bump.        |
 | Retrieve Last Release  | Query git tags and GitHub releases                                    |
-| Verify Release         | Validate proposed changes                                             |
 | Bump Version           | Update version in package manifest                                    |
 | Generate Changelog     | Process commit history with git-cliff                                 |
 | Create Git Commit      | Commit version bump and changelog updates                             |
