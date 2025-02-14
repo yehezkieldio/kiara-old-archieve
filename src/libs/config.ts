@@ -11,7 +11,6 @@ export const DEFAULT_CONFIGURATION: KiaraConfig = {
         requireCleanWorkingDir: true,
         requireCleanGitStatus: true,
         requireUpstream: true,
-        requireCommits: true,
         pushCommits: {
             enabled: true,
             commitMessage: "chore: release {{name}}@{{version}}",

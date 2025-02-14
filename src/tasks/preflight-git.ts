@@ -10,6 +10,7 @@ export function preflightGit(context: KiaraContext): ResultAsync<void, Error> {
         .andThen((): ResultAsync<void, Error> => checkUncommittedChanges(context))
         .andThen((): ResultAsync<void, Error> => checkGitStatusClean(context))
         .andThen((): ResultAsync<void, Error> => checkReleaseBranch(context))
+        .andThen((): ResultAsync<void, Error> => checkUpstreamBranch(context))
         .andThen((): ResultAsync<void, Error> => checkGithubToken(context));
 }
 
@@ -113,5 +114,24 @@ function checkGitStatusClean(context: KiaraContext): ResultAsync<void, Error> {
             return result.stdout === ""
                 ? ok(undefined)
                 : err(new Error("Dirty git status. Please commit or stash your changes before running this command."));
+        });
+}
+
+function checkUpstreamBranch(context: KiaraContext): ResultAsync<void, Error> {
+    if (context.config.git?.requireUpstream === false) {
+        return okAsync(undefined);
+    }
+
+    return ResultAsync.fromPromise(
+        execa("git", ["rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}"]),
+        (error) => new Error(`Error checking upstream branch: ${error}`)
+    )
+        .andTee(({ command }) => logger.verbose(`Checking upstream branch: ${command}`))
+        .andThen((result) => {
+            return result.stdout !== ""
+                ? ok(undefined)
+                : err(
+                      new Error("No upstream branch found. Please set an upstream branch before running this command.")
+                  );
         });
 }

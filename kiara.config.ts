@@ -7,7 +7,6 @@ export default defineConfig({
         requireCleanWorkingDir: false,
         requireCleanGitStatus: false,
         requireUpstream: true,
-        requireCommits: true,
         pushCommits: {
             enabled: true,
             commitMessage: "chore: release {{name}}@{{version}}",
