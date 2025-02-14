@@ -23,12 +23,13 @@
         "typescript": "^5.0.0"
     },
     "dependencies": {
+        "@octokit/auth-token": "^5.1.2",
+        "@octokit/core": "^6.1.4",
         "c12": "^2.0.1",
         "commander": "^13.1.0",
         "consola": "^3.4.0",
         "execa": "^9.5.2",
         "neverthrow": "^8.1.1",
-        "octokit": "^4.1.1",
         "semver": "^7.7.1"
     },
     "devDependencies": {

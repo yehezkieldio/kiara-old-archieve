@@ -1,11 +1,15 @@
+import type { Octokit } from "@octokit/core";
 import { execa } from "execa";
-import { ResultAsync, err, ok } from "neverthrow";
-import { Octokit } from "octokit";
+import { type Err, ResultAsync, err, ok, okAsync } from "neverthrow";
 import type { KiaraContext } from "#/kiara";
+import { createOctokit } from "#/libs/github";
 import { logger } from "#/libs/logger";
 
 export function preflightGit(context: KiaraContext): ResultAsync<void, Error> {
-    return checkGitRepository().andThen((): ResultAsync<void, Error> => checkTokenScopes(context));
+    return checkGitRepository()
+        .andThen((): ResultAsync<void, Error> => checkUncommittedChanges(context))
+        .andThen((): ResultAsync<void, Error> => checkReleaseBranch(context))
+        .andThen((): ResultAsync<void, Error> => checkGithubToken(context));
 }
 
 function checkGitRepository(): ResultAsync<void, Error> {
@@ -13,7 +17,7 @@ function checkGitRepository(): ResultAsync<void, Error> {
         execa("git", ["rev-parse", "--is-inside-work-tree"]),
         (error) => new Error(`Error checking for git repository: ${error}`)
     )
-        .andTee(({ command }) => logger.verbose(command))
+        .andTee(({ command }) => logger.verbose(`Checking for git repository: ${command}`))
         .andThen((result) => {
             return result.stdout === "true"
                 ? ok(undefined)
@@ -21,24 +25,74 @@ function checkGitRepository(): ResultAsync<void, Error> {
         });
 }
 
-function checkTokenScopes(context: KiaraContext): ResultAsync<void, Error> {
-    const octokit = new Octokit({
-        auth: process.env.GITHUB_TOKEN || context.options.githubToken,
-    });
+function checkUncommittedChanges(context: KiaraContext): ResultAsync<void, Error> {
+    if (context.config.git?.requireCleanWorkingDir === false) {
+        return okAsync(undefined);
+    }
 
     return ResultAsync.fromPromise(
-        octokit.rest.users.getAuthenticated(),
-        (error: unknown): Error => new Error(`Failed to verify GitHub token: ${error}`)
+        execa("git", ["status", "--porcelain"]),
+        (error) => new Error(`Error checking for uncommitted changes: ${error}`)
     )
-        .andTee((response) => logger.verbose(response.url))
-        .andThen((response) => {
-            const scopes = response.headers["x-oauth-scopes"] as string | undefined;
+        .andTee(({ command }) => logger.verbose(command))
+        .andThen((result) => {
+            return result.stdout === ""
+                ? ok(undefined)
+                : err(new Error("There are uncommitted changes in the current working directory."));
+        });
+}
 
-            return scopes?.includes("repo")
+function checkGithubToken(context: KiaraContext): ResultAsync<undefined, Error> {
+    if (!context.config.github?.release) {
+        return okAsync(undefined);
+    }
+
+    const octokit: ResultAsync<Octokit, unknown> = createOctokit(
+        context.options.githubToken || process.env.GITHUB_TOKEN
+    );
+
+    return octokit
+        .andThen((client: Octokit): ResultAsync<undefined, Error> => {
+            return ResultAsync.fromPromise(
+                client.request("GET /user"),
+                (error: unknown): Error => new Error(`Error checking GitHub token: ${error}`)
+            )
+                .andTee(({ url }) => logger.verbose(`GET ${url}`))
+                .andThen(() => okAsync(undefined));
+        })
+        .orElse((): Err<never, Error> => {
+            return err(new Error("The GitHub token is invalid or does not have the required permissions."));
+        });
+}
+
+function checkReleaseBranch(context: KiaraContext): ResultAsync<void, Error> {
+    if (context.config.git?.requireBranch === false) {
+        return okAsync(undefined);
+    }
+
+    const releaseBranch: string | string[] = context.config.git?.branches || "master";
+
+    return ResultAsync.fromPromise(
+        execa("git", ["rev-parse", "--abbrev-ref", "HEAD"]),
+        (): Error => new Error("Error checking current branch")
+    )
+        .andTee(({ command }): void => logger.verbose(`Checking current branch: ${command}`))
+        .andThen((result) => {
+            if (Array.isArray(releaseBranch)) {
+                return releaseBranch.includes(result.stdout)
+                    ? ok(undefined)
+                    : err(
+                          new Error(
+                              `You are not on a valid release branch. Please checkout one of the branches: ${releaseBranch.join(", ")} before running this command.`
+                          )
+                      );
+            }
+
+            return result.stdout === releaseBranch
                 ? ok(undefined)
                 : err(
                       new Error(
-                          "The provided GitHub token does not have the required 'repo' scope. Please generate a new token with the 'repo' scope."
+                          `You are not on a valid release branch. Please checkout the branch: ${releaseBranch} before running this command.`
                       )
                   );
         });

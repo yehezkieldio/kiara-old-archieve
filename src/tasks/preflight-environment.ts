@@ -17,9 +17,10 @@ function checkGithubToken(context: KiaraContext): Result<void, Error> {
         return ok(undefined);
     }
 
-    if (!context.options.githubToken || !process.env.GITHUB_TOKEN) {
+    if (!context.options.githubToken && !process.env.GITHUB_TOKEN) {
         return err(new Error("Could not find a GitHub token in the environment or options!"));
     }
+
     return ok(undefined);
 }
 
