@@ -5,17 +5,15 @@ import type { KiaraContext } from "#/kiara";
 import { createOctokit } from "#/libs/github";
 import { logger } from "#/libs/logger";
 
-export function preflightGit(context: KiaraContext): ResultAsync<void, Error> {
-    return (
-        checkGitRepository(context)
-            // when adding new checks, make sure to return the context so that the next check can use it
-            .andThen(checkUncommittedChanges)
-            .andThen(checkGitStatusClean)
-            .andThen(checkReleaseBranch)
-            .andThen(checkGithubToken)
-            // the last check does not need to return the context
-            .andThen(checkUpstreamBranch)
-    );
+export function preflightGit(context: KiaraContext): ResultAsync<KiaraContext, Error> {
+    return checkGitRepository(context)
+        .andThen(checkUncommittedChanges)
+        .andThen(checkGitStatusClean)
+        .andThen(checkReleaseBranch)
+        .andThen(checkGithubToken)
+        .andThen(checkUpstreamBranch)
+        .andTee((): void => logger.verbose("Preflight checks for git passed successfully."))
+        .map((): KiaraContext => context);
 }
 
 function checkGitRepository(context: KiaraContext): ResultAsync<KiaraContext, Error> {
@@ -63,7 +61,7 @@ function checkGithubToken(context: KiaraContext): ResultAsync<KiaraContext, Erro
                 client.request("GET /user"),
                 (error: unknown): Error => new Error(`Error checking GitHub token: ${error}`)
             )
-                .andTee(({ url }) => logger.verbose(`GET ${url}`))
+                .andTee(({ url }) => logger.verbose(`Checking token with GitHub API: ${url}`))
                 .andThen(() => okAsync(context));
         })
         .orElse((): Err<never, Error> => {

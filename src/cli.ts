@@ -42,7 +42,7 @@ program
     .option("-b, --bump-strategy [string]", "Version bump strategy (recommended|manual)", "")
     .option("-t, --github-token [string]", "The authentication token to use for GitHub API requests.", "")
     .action(async (options: KiaraBumpOptions): Promise<void> => {
-        logger.info(`Running ${color.dim("kiara")} version ${color.dim(internal.version)}`);
+        logger.info(`Running ${color.cyanBright("kiara")} version ${color.dim(internal.version)}`);
         return new Promise<void>((): ResultAsync<void, void> => initializeBump(options).mapErr(handleError));
     })
     .addHelpText("after", afterText);
