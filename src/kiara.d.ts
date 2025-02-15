@@ -34,3 +34,24 @@ export interface KiaraOptions {
      */
     token: string;
 }
+
+export interface KiaraContext {
+    /**
+     * The options passed to the command.
+     */
+    options: KiaraOptions;
+
+    /**
+     * Version information.
+     */
+    version: {
+        /**
+         * The current version of the project/package.
+         */
+        current: string;
+        /**
+         * The new version of the project/package.
+         */
+        new: string;
+    };
+}
