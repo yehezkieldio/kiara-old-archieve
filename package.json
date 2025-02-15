@@ -1,9 +1,8 @@
 {
     "name": "@amarislabs/kiara",
     "type": "module",
-    "version": "1.0.0",
+    "version": "0.0.0",
     "description": "CLI orchestrator for managing releases, versioning, and changelog generation.",
-    "repository": "https://github.com/amarislabs/kiara",
     "exports": {
         ".": {
             "types": "./src/index.ts",
@@ -15,20 +14,22 @@
     "bin": {
         "kiara": "./src/cli.ts"
     },
+    "license": "MIT",
+    "homepage": "https://github.com/amarislabs/kiara#readme",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/amarislabs/kiara.git"
+    },
     "scripts": {
-        "biome": "biome check .",
-        "biome:fix": "biome check . --write"
+        "lint": "biome check src",
+        "format": "biome format . --write"
     },
     "peerDependencies": {
         "typescript": "^5.0.0"
     },
     "dependencies": {
-        "@octokit/auth-token": "^5.1.2",
-        "@octokit/core": "^6.1.4",
-        "c12": "^2.0.1",
         "commander": "^13.1.0",
         "consola": "^3.4.0",
-        "execa": "^9.5.2",
         "neverthrow": "^8.1.1",
         "semver": "^7.7.1"
     },
@@ -36,7 +37,6 @@
         "@biomejs/biome": "^1.9.4",
         "@types/bun": "latest",
         "@types/semver": "^7.5.8",
-        "git-cliff": "^2.8.0",
         "ultracite": "^4.1.19"
     }
 }
