@@ -24,7 +24,6 @@ After executing a bump command, Kiara will guide you through prompts and steps t
 | ---------------------- | --------------------------------------------------------------------- |
 | Verify Conditions      | Ensure the repository is in a clean state and all conditions are met. |
 | Determine Version Bump | Analyze commits for next version or prompt for a version bump.        |
-| Retrieve Last Release  | Query git tags and GitHub releases                                    |
 | Bump Version           | Update version in package manifest                                    |
 | Generate Changelog     | Process commit history with git-cliff                                 |
 | Create Git Commit      | Commit version bump and changelog updates                             |
@@ -98,8 +97,8 @@ Kiara supports creating GitHub releases, which requires a GitHub token *(either 
 GITHUB_TOKEN=<token> bunx kiara bump --github-token <token>
 ```
 
-## License
+## License and Attribution
 
-Kiara is licensed under the MIT License. See the [LICENSE](https://github.com/amarislabs/kiara/blob/master/LICENSE) for more details.
+Kiara is a project inspired by various release management tools and practices, including [semantic-release](https://github.com/semantic-release/semantic-release), [standard-version](https://github.com/conventional-changelog/standard-version), [cliff-jumper](https://github.com/favware/cliff-jumper), and [release-it](https://github.com/release-it/release-it). Kiara is licensed under the MIT License. See the [LICENSE](https://github.com/amarislabs/kiara/blob/master/LICENSE) for more details.
 
 
