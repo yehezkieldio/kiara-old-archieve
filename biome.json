@@ -29,7 +29,8 @@
                 "useForOf": "error",
                 "useNodejsImportProtocol": "error",
                 "useNumberNamespace": "error",
-                "noInferrableTypes": "warn"
+                "noInferrableTypes": "warn",
+                "useBlockStatements": "off"
             },
             "correctness": {
                 "noUnusedImports": "warn",
