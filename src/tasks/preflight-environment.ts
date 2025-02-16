@@ -3,14 +3,19 @@ import type { KiaraContext } from "#/kiara";
 import { CWD_PACKAGE_PATH } from "#/libs/constants";
 import { fileExists } from "#/libs/file";
 import { logger } from "#/libs/logger";
+import { getToken } from "#/libs/token";
 
 export function preflightEnvironment(context: KiaraContext): ResultAsync<KiaraContext, Error> {
     return checkToken(context).asyncAndThen(checkPackageJson);
 }
 
 function checkToken(context: KiaraContext): Result<KiaraContext, Error> {
-    if (!context.options.token && !process.env.GITHUB_TOKEN && !process.env.GH_TOKEN) {
-        return err(new Error("GitHub token is required."));
+    if (!getToken(context)) {
+        return err(
+            new Error(
+                "GitHub token is required. Set it via the --token option or the GITHUB_TOKEN environment variable."
+            )
+        );
     }
 
     return ok(context);
