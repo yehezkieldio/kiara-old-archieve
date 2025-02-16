@@ -4,6 +4,7 @@ import { ResultAsync, errAsync, okAsync } from "neverthrow";
 import type { KiaraContext } from "#/kiara";
 import { createOctokit } from "#/libs/github";
 import { logger } from "#/libs/logger";
+import { getToken } from "#/libs/token";
 
 export function preflightGit(context: KiaraContext): ResultAsync<KiaraContext, Error> {
     return checkGitRepository(context)
@@ -51,7 +52,7 @@ function checkUncommittedChanges(context: KiaraContext): ResultAsync<KiaraContex
  * @param context The Kiara context.
  */
 function checkGithubToken(context: KiaraContext): ResultAsync<KiaraContext, Error> {
-    const octokit: ResultAsync<Octokit, unknown> = createOctokit(context.options.token || process.env.GITHUB_TOKEN);
+    const octokit: ResultAsync<Octokit, unknown> = createOctokit(getToken(context));
 
     return octokit
         .andThen((client: Octokit): ResultAsync<KiaraContext, Error> => {
