@@ -1,7 +1,7 @@
 import { ResultAsync, okAsync } from "neverthrow";
 import type { KiaraContext, KiaraOptions } from "#/kiara";
 import { CWD_PACKAGE_PATH } from "#/libs/constants";
-import { getPackageJson, getPackageName, getPackageVersion } from "#/libs/pkg";
+import { getPackageJson, getPackageName, getPackageVersion } from "#/libs/package";
 
 /**
  * If the name option is empty, get the name from the package.json file. Otherwise, return the name option.
