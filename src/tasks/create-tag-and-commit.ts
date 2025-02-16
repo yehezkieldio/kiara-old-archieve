@@ -22,14 +22,29 @@ function commitRelease(context: KiaraContext): ResultAsync<KiaraContext, Error> 
     ).map(() => context);
 }
 
+function canSignGitTags(): ResultAsync<boolean, Error> {
+    return ResultAsync.fromPromise(
+        execa("git", ["config", "--get", "user.signingkey"], { cwd: process.cwd() }),
+        () => new Error("Error checking for GPG key")
+    ).map((result) => result.stdout.length > 0);
+}
+
 function createTag(context: KiaraContext): ResultAsync<KiaraContext, Error> {
     const tagName = `v${context.version.new}`;
     const tagMessage = `Release ${tagName}`;
 
-    return ResultAsync.fromPromise(
-        execa("git", ["tag", "-a", tagName, "-m", tagMessage], { cwd: process.cwd() }),
-        (error) => new Error(`Error creating annotated tag: ${error}`)
-    ).map(() => context);
+    return canSignGitTags()
+        .map((canSign) => {
+            const baseArgs = ["tag", "-a", tagName, "-m", tagMessage];
+            return canSign ? [...baseArgs, "-s"] : baseArgs;
+        })
+        .andThen((args) =>
+            ResultAsync.fromPromise(
+                execa("git", args, { cwd: process.cwd() }),
+                (error) => new Error(`Error creating annotated tag: ${error}`)
+            )
+        )
+        .map(() => context);
 }
 
 export function createTagAndCommit(context: KiaraContext): ResultAsync<KiaraContext, Error> {
