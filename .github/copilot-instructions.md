@@ -1,5 +1,5 @@
-Avoid using TypeScript-specific syntax like enums or namespaces, while the other TypeScript features are allowed.
+Never use the try-catch block, never use classes, always use functions, especially the function keyword, and always use the neverthrow package to handle errors. Always aim for immutability and pure functions, ensuring side effects are managed appropriately.
 
-Always favor fluent and functional programming style with a Rust flavor using the `neverthrow` package where appropriate. Never use try-catch blocks, and always use the `neverthrow` package.
+Prioritize the locality of behavior and data, ensuring that functions are as close to the data they operate on as possible. Always aim for a functional programming style with a Rust flavor using the neverthrow package where appropriate, while possible use the Railway Oriented Programming (ROP) pattern too. Avoid excessive comments and ensure clarity in function definitions.
 
-Avoid using classes and use functions instead, and when creating a new function, don't use the arrow function expression but prefer the function keyword. Flow the Railway Oriented Programming (ROP) pattern when writing functions, and always use the `neverthrow` package to handle errors. Always aim for immutability and pure functions, ensuring side effects are managed appropriately.
+
