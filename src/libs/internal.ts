@@ -6,7 +6,7 @@ import { getPackageJson } from "#/libs/pkg";
 const _internal: Result<PackageJson, Error> = await getPackageJson(KIARA_PACKAGE_PATH);
 const pkg = _internal._unsafeUnwrap() as Required<PackageJson>;
 
-export const internal = {
+export const _pkg = {
     name: pkg.name,
     description: pkg.description,
     version: pkg.version,
