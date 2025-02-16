@@ -1,4 +1,4 @@
-import { type Err, type Ok, ResultAsync, err, ok } from "neverthrow";
+import { type Err, type Ok, type Result, ResultAsync, err, ok } from "neverthrow";
 import type { PackageJson } from "pkg-types";
 
 /**
@@ -13,12 +13,47 @@ export function getPackageJson(path: string): ResultAsync<PackageJson, Error> {
 }
 
 /**
+ * Take a package.json object and return the name field.
+ * @param pkg The package.json object.
+ */
+export function getPackageName(pkg: PackageJson): Result<string, Error> {
+    return pkg.name ? ok(pkg.name) : err(new Error("Name field not found in package.json"));
+}
+
+/**
+ * Take a package.json object and return the version field.
+ * @param pkg The package.json object.
+ */
+export function getPackageVersion(pkg: PackageJson): Result<string, Error> {
+    return pkg.version ? ok(pkg.version) : err(new Error("Version field not found in package.json"));
+}
+
+/**
+ * Get the description field from the package.json object.
+ * @param pkg The package.json object.
+ */
+export function getPackageDescription(pkg: PackageJson): Result<string, Error> {
+    return pkg.description ? ok(pkg.description) : err(new Error("Description field not found in package.json"));
+}
+
+/**
  * Update the version field in the package.json file.
  * @param path The path to the package.json file.
  * @param newVersion The new version to set in the package.json file.
  */
 export function updatePackageVersion(path: string, newVersion: string): ResultAsync<string, Error> {
     const VERSION_REGEX = /^(\s*"version"\s*:\s*)"[^"]*"(.*)$/m;
+
+    /**
+     * Get the package.json file as text.
+     * @param path The path to the package.json file.
+     */
+    function getPackageJsonAsText(path: string): ResultAsync<string, Error> {
+        return ResultAsync.fromPromise(
+            Bun.file(path).text(),
+            (error: unknown): Error => new Error(`Failed to read package.json: ${error}`)
+        );
+    }
 
     /**
      * Match the version field in the package.json file and update it with the new version.
@@ -44,10 +79,5 @@ export function updatePackageVersion(path: string, newVersion: string): ResultAs
         ).map((): string => newVersion);
     }
 
-    return ResultAsync.fromPromise(
-        Bun.file(path).text(),
-        (error: unknown): Error => new Error(`Failed to read package.json: ${error}`)
-    )
-        .andThen(matchAndUpdate)
-        .andThen(writePackageJson);
+    return getPackageJsonAsText(path).andThen(matchAndUpdate).andThen(writePackageJson);
 }
