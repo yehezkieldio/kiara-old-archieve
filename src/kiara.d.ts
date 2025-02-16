@@ -21,9 +21,9 @@ export interface KiaraOptions {
     name: string;
 
     /**
-     * The type of the bump strategy.
+     * The type of the bump strategy. Defaults to empty string, which means the user will be prompted for the version.
      * Available as `--bump-strategy` or `-b`.
-     * @default "manual"
+     * @default ""
      */
     bumpStrategy: BumpStrategy;
 

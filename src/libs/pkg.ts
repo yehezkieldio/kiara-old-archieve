@@ -16,7 +16,7 @@ export function getPackageJson(path: string): ResultAsync<PackageJson, Error> {
  * Take a package.json object and return the name field.
  * @param pkg The package.json object.
  */
-export function getPackageName(pkg: PackageJson): Result<string, Error> {
+function getPackageName(pkg: PackageJson): Result<string, Error> {
     return pkg.name ? ok(pkg.name) : err(new Error("Name field not found in package.json"));
 }
 
@@ -24,7 +24,7 @@ export function getPackageName(pkg: PackageJson): Result<string, Error> {
  * Take a package.json object and return the version field.
  * @param pkg The package.json object.
  */
-export function getPackageVersion(pkg: PackageJson): Result<string, Error> {
+function getPackageVersion(pkg: PackageJson): Result<string, Error> {
     return pkg.version ? ok(pkg.version) : err(new Error("Version field not found in package.json"));
 }
 
@@ -32,9 +32,15 @@ export function getPackageVersion(pkg: PackageJson): Result<string, Error> {
  * Get the description field from the package.json object.
  * @param pkg The package.json object.
  */
-export function getPackageDescription(pkg: PackageJson): Result<string, Error> {
+function getPackageDescription(pkg: PackageJson): Result<string, Error> {
     return pkg.description ? ok(pkg.description) : err(new Error("Description field not found in package.json"));
 }
+
+export const pkg = {
+    name: getPackageName,
+    version: getPackageVersion,
+    description: getPackageDescription,
+};
 
 /**
  * Update the version field in the package.json file.
