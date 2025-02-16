@@ -24,25 +24,23 @@ const strategies: BumpSelectOption[] = [
     },
 ];
 
-type StrategyHandler = (context: KiaraContext) => ResultAsync<void, Error>;
+type StrategyHandler = (context: KiaraContext) => ResultAsync<KiaraContext, Error>;
 type StrategyHandlers = Record<BumpStrategy, StrategyHandler>;
 
 function getStrategyHandlers(): StrategyHandlers {
     return {
-        recommended: (context: KiaraContext): ResultAsync<undefined, Error> =>
-            getRecommendedVersion(context).map((version: string): undefined => {
-                updateNewVersion(context, version);
-                return undefined;
+        recommended: (context: KiaraContext): ResultAsync<KiaraContext, Error> =>
+            getRecommendedVersion(context).map((version: string) => {
+                return updateNewVersion(context, version);
             }),
-        manual: (context: KiaraContext): ResultAsync<undefined, Error> =>
-            promptManualBump(context).map((version: string): undefined => {
-                updateNewVersion(context, version);
-                return undefined;
+        manual: (context: KiaraContext): ResultAsync<KiaraContext, Error> =>
+            promptManualBump(context).map((version: string) => {
+                return updateNewVersion(context, version);
             }),
     };
 }
 
-function executeStrategy(context: KiaraContext, strategy: BumpStrategy): ResultAsync<void, Error> {
+function executeStrategy(context: KiaraContext, strategy: BumpStrategy): ResultAsync<KiaraContext, Error> {
     const handlers: StrategyHandlers = getStrategyHandlers();
     return handlers[strategy](context);
 }
@@ -65,13 +63,11 @@ export function selectBumpStrategy(context: KiaraContext): ResultAsync<KiaraCont
         ? ResultAsync.fromPromise(
               Promise.resolve(context.options.bumpStrategy),
               (): Error => new Error("Failed to get bump strategy from options")
+          ).andThen(
+              (strategy: BumpStrategy): ResultAsync<KiaraContext, Error> =>
+                  executeStrategy(context, strategy as BumpStrategy)
           )
-              .andThen(
-                  (strategy: BumpStrategy): ResultAsync<void, Error> =>
-                      executeStrategy(context, strategy as BumpStrategy)
-              )
-              .map((): KiaraContext => context)
-        : promptStrategy()
-              .andThen((strategy: BumpStrategy): ResultAsync<void, Error> => executeStrategy(context, strategy))
-              .map((): KiaraContext => context);
+        : promptStrategy().andThen(
+              (strategy: BumpStrategy): ResultAsync<KiaraContext, Error> => executeStrategy(context, strategy)
+          );
 }
