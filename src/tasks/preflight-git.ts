@@ -39,7 +39,7 @@ function checkUncommittedChanges(context: KiaraContext): ResultAsync<KiaraContex
         execa("git", ["status", "--porcelain"], { cwd: process.cwd() }),
         (error) => new Error(`Error checking for uncommitted changes: ${error}`)
     )
-        .andTee(({ command }): void => logger.verbose(command))
+        .andTee(({ command }): void => logger.verbose(`Checking for uncommitted changes: ${command}`))
         .andThen((result): ResultAsync<KiaraContext, Error> => {
             return result.stdout === ""
                 ? okAsync(context)

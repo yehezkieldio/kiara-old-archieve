@@ -55,7 +55,8 @@ function promptStrategy(): ResultAsync<BumpStrategy, Error> {
             initial: strategies[1].value,
             cancel: "reject",
         }),
-        (error) => new Error(error instanceof Error ? error.message : "Failed to select version strategy")
+        (error: unknown): Error =>
+            new Error(error instanceof Error ? error.message : "Failed to select version strategy")
     );
 }
 
@@ -63,11 +64,14 @@ export function selectBumpStrategy(context: KiaraContext): ResultAsync<KiaraCont
     return context.options.bumpStrategy
         ? ResultAsync.fromPromise(
               Promise.resolve(context.options.bumpStrategy),
-              () => new Error("Failed to get bump strategy from options")
+              (): Error => new Error("Failed to get bump strategy from options")
           )
-              .andThen((strategy) => executeStrategy(context, strategy as BumpStrategy))
-              .map(() => context)
+              .andThen(
+                  (strategy: BumpStrategy): ResultAsync<void, Error> =>
+                      executeStrategy(context, strategy as BumpStrategy)
+              )
+              .map((): KiaraContext => context)
         : promptStrategy()
-              .andThen((strategy) => executeStrategy(context, strategy))
-              .map(() => context);
+              .andThen((strategy: BumpStrategy): ResultAsync<void, Error> => executeStrategy(context, strategy))
+              .map((): KiaraContext => context);
 }
