@@ -12,12 +12,16 @@ export function preflightGit(context: KiaraContext): ResultAsync<KiaraContext, E
         .andThen(checkUpstreamBranch);
 }
 
+/**
+ * Check if the current working directory is a git repository.
+ * @param context The Kiara context.
+ */
 function checkGitRepository(context: KiaraContext): ResultAsync<KiaraContext, Error> {
     return ResultAsync.fromPromise(
         execa("git", ["rev-parse", "--is-inside-work-tree"], { cwd: process.cwd() }),
         (error: unknown): Error => new Error(`Error checking for git repository: ${error}`)
     )
-        .andTee(({ command }) => logger.verbose(`Checking for git repository: ${command}`))
+        .andTee(({ command }): void => logger.verbose(`Checking for git repository: ${command}`))
         .andThen((result): ResultAsync<KiaraContext, Error> => {
             return result.stdout === "true"
                 ? okAsync(context)
@@ -25,6 +29,10 @@ function checkGitRepository(context: KiaraContext): ResultAsync<KiaraContext, Er
         });
 }
 
+/**
+ * Check if there are uncommitted changes in the current working directory.
+ * @param context The Kiara context.
+ */
 function checkUncommittedChanges(context: KiaraContext): ResultAsync<KiaraContext, Error> {
     return ResultAsync.fromPromise(
         execa("git", ["status", "--porcelain"], { cwd: process.cwd() }),
@@ -38,6 +46,10 @@ function checkUncommittedChanges(context: KiaraContext): ResultAsync<KiaraContex
         });
 }
 
+/**
+ * Check if the GitHub token is valid and has the required permissions.
+ * @param context The Kiara context.
+ */
 function checkGithubToken(context: KiaraContext): ResultAsync<KiaraContext, Error> {
     const octokit: ResultAsync<Octokit, unknown> = createOctokit(context.options.token || process.env.GITHUB_TOKEN);
 
@@ -55,13 +67,17 @@ function checkGithubToken(context: KiaraContext): ResultAsync<KiaraContext, Erro
         });
 }
 
+/**
+ * Check if there is an upstream branch set for the current branch.
+ * @param context The Kiara context.
+ */
 function checkUpstreamBranch(context: KiaraContext): ResultAsync<KiaraContext, Error> {
     return ResultAsync.fromPromise(
         execa("git", ["rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}"]),
         (error) => new Error(`Error checking upstream branch: ${error}`)
     )
-        .andTee(({ command }) => logger.verbose(`Checking upstream branch: ${command}`))
-        .andThen((result) => {
+        .andTee(({ command }): void => logger.verbose(`Checking upstream branch: ${command}`))
+        .andThen((result): ResultAsync<KiaraContext, Error> => {
             return result.stdout !== ""
                 ? okAsync(context)
                 : errAsync(
