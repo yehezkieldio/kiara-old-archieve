@@ -1,6 +1,6 @@
 import { ResultAsync, okAsync } from "neverthrow";
 import type { KiaraContext, KiaraOptions } from "#/kiara";
-import { CWD } from "#/libs/constants";
+import { CWD_PACKAGE_PATH } from "#/libs/constants";
 import { getPackageJson, pkg } from "#/libs/pkg";
 
 /**
@@ -9,7 +9,7 @@ import { getPackageJson, pkg } from "#/libs/pkg";
  */
 function getName(options: KiaraOptions): ResultAsync<string, Error> {
     if (options.name === "") {
-        return getPackageJson(CWD).andThen(pkg.name);
+        return getPackageJson(CWD_PACKAGE_PATH).andThen(pkg.name);
     }
 
     return okAsync(options.name);
@@ -19,7 +19,7 @@ function getName(options: KiaraOptions): ResultAsync<string, Error> {
  * Get the version from the package.json file.
  */
 function getVersion(): ResultAsync<string, Error> {
-    return getPackageJson(CWD).andThen(pkg.version);
+    return getPackageJson(CWD_PACKAGE_PATH).andThen(pkg.version);
 }
 
 export function createContext(options: KiaraOptions): ResultAsync<KiaraContext, Error> {
