@@ -1,8 +1,9 @@
 import { LogLevels } from "consola";
-import { ResultAsync } from "neverthrow";
+import type { ResultAsync } from "neverthrow";
 import type { KiaraOptions } from "#/kiara";
 import { _pkg } from "#/libs/internal";
 import { color, logger } from "#/libs/logger";
+import { createContext } from "#/tasks/create-context";
 
 export function initBump(options: KiaraOptions): ResultAsync<void, Error> {
     if (options.verbose) logger.level = LogLevels.verbose;
@@ -10,5 +11,5 @@ export function initBump(options: KiaraOptions): ResultAsync<void, Error> {
     logger.info(`Running ${color.magenta("kiara")} version ${color.dim(_pkg.version)}`);
     logger.verbose(`Options: ${JSON.stringify(options)}`);
 
-    return ResultAsync.fromPromise(Promise.resolve(), (): Error => new Error("initBump() not implemented"));
+    return createContext(options);
 }
