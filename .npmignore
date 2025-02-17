@@ -62,4 +62,5 @@ dist
 .vscode
 biome.json
 bun.lock
+cliff.toml
 renovate.json

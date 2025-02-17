@@ -26,7 +26,7 @@ function commitRelease(context: KiaraContext): ResultAsync<KiaraContext, Error> 
     const commitMessage: string = resolveCommitMessage(context);
 
     return executeGitCommand(
-        ["commit", "--no-verify", "-m", `"${commitMessage}"`],
+        ["commit", "--no-verify", "-m", commitMessage],
         context,
         "Error committing changes"
     ).map(() => context);
