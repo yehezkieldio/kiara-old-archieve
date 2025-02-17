@@ -96,12 +96,7 @@ function getVersionFromReleaseType(
         Promise.resolve(semver.inc(currentVersion, releaseType)),
         (error: unknown): Error =>
             new Error(`Failed to increment version with release type ${releaseType}: ${error}`)
-    ).map((version: string | null): string => {
-        if (!version) {
-            throw new Error(`Invalid version increment: ${currentVersion} with ${releaseType}`);
-        }
-        return version;
-    });
+    ).map((version: string | null): string => version as string);
 }
 
 export function getManualVersion(context: KiaraContext): ResultAsync<string, Error> {
