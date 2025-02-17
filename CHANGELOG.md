@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.3] - 2025-02-17
+
+### 🐛 Bug Fixes
+
+- Correct NPM token environment variable and improve error handling
+
 ## [0.0.2] - 2025-02-17
 
 ### 🐛 Bug Fixes
