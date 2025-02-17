@@ -67,7 +67,7 @@ It is planned to introduce a `kiara.config.ts` for a more extensive configuratio
 You can override configuration settings using CLI flags. Note that not all settings can be overridden via flags. To view available options, run:
 
 ```bash
-bunx kiara bump --help
+bunx kiara --help
 ```
 
 #### Available Options
