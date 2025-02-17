@@ -41,7 +41,7 @@ const TYPE_PREFIX: { [k in LogType]?: string } = {
     ready: "READY",
     warn: "WARN",
     info: "INFO",
-    success: "INIT",
+    success: "SUCCESS",
     debug: "DEBUG",
     trace: "TRACE",
     fail: "FAIL",

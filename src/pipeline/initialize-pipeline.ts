@@ -15,7 +15,7 @@ import { verifyConditions } from "#/pipeline/verify-conditions";
 export function initializePipeline(options: KiaraOptions): ResultAsync<void, Error> {
     if (options.verbose) logger.level = LogLevels.verbose;
 
-    logger.info(`Running ${color.magenta("kiara")} version ${color.dim(INTERNAL.VERSION)}`);
+    logger.start(`Running ${color.magenta("kiara")} version ${color.dim(INTERNAL.VERSION)}`);
 
     return validateOptions(options)
         .asyncAndThen(createContext)
@@ -25,6 +25,7 @@ export function initializePipeline(options: KiaraOptions): ResultAsync<void, Err
         .andThen(generateChangelog)
         .andThen(createTagAndCommit)
         .andThen(pushAndRelease)
+        .andTee(() => logger.success("Release process completed successfully!"))
         .mapErr((error: Error): Error => {
             logger.error(error.message);
             process.exit(1);
