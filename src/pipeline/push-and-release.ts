@@ -71,8 +71,10 @@ function createGitHubRelease(context: KiaraContext): ResultAsync<KiaraContext, E
             logger.info("GitHub release created successfully!");
         })
         .map((): KiaraContext => context)
-        .mapErr((error: unknown): Error => {
-            return new Error(`Error creating GitHub release: ${error}`);
+        .mapErr((): Error => {
+            return new Error(
+                "Can't create a GitHub release, make sure you have the required permissions. If you're publishing to a organization using a fine-grained personal access token, make sure it's created in the organization settings rather than your personal settings."
+            );
         });
 }
 
