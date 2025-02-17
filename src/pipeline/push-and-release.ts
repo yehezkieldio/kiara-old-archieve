@@ -11,6 +11,7 @@ import {
     getRepositoryUrl,
     resolveTagTemplate,
 } from "#/libs/util";
+import { removeHeaderFromChangelog } from "#/tasks/parse-cliff-toml";
 
 function pushCommitAndTag(context: KiaraContext): ResultAsync<KiaraContext, Error> {
     logger.info("Pushing changes and tags...");
@@ -44,23 +45,25 @@ function createGitHubRelease(context: KiaraContext): ResultAsync<KiaraContext, E
     return getRepositoryUrl()
         .andThen(extractRepositoryMetadata)
         .andThen((metadata: RepositoryMetadata) => {
-            const owner = metadata.owner;
-            const repo = metadata.name;
+            const owner: string = metadata.owner;
+            const repo: string = metadata.name;
 
-            return octokit.andThen((octokit: Octokit) => {
-                return ResultAsync.fromPromise(
-                    octokit.request("POST /repos/{owner}/{repo}/releases", {
-                        owner,
-                        repo,
-                        tag_name: resolveTagTemplate(context),
-                        body: context.changelog.content,
-                        generate_release_notes: context.changelog.content !== "",
-                        headers: OctokitRequestHeaders,
-                        make_latest: "true",
-                        name: resolveTagTemplate(context),
-                    }),
-                    (): Error => new Error("error")
-                );
+            return removeHeaderFromChangelog(context.changelog.content).andThen((content) => {
+                return octokit.andThen((octokit: Octokit) => {
+                    return ResultAsync.fromPromise(
+                        octokit.request("POST /repos/{owner}/{repo}/releases", {
+                            owner,
+                            repo,
+                            tag_name: resolveTagTemplate(context),
+                            body: content,
+                            generate_release_notes: context.changelog.content === "",
+                            headers: OctokitRequestHeaders,
+                            make_latest: "true",
+                            name: resolveTagTemplate(context),
+                        }),
+                        (): Error => new Error("error")
+                    );
+                });
             });
         })
         .andTee((): void => {
