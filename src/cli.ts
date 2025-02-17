@@ -26,6 +26,8 @@ program
     )
     .option("-t, --token [string]", "The authentication token to use for GitHub API requests.", "")
     .option("--skip-bump", "Skip the version bump process.")
+    .option("--skip-push", "Skip the commit and tag push process.")
+    .option("--skip-release", "Skip the GitHub release creation process.")
     .option("--dry-run", "Run in dry run mode.")
     .action((options: KiaraOptions): Promise<void> => {
         return new Promise<void>((): ResultAsync<void, Error> => initializePipeline(options));

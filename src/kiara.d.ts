@@ -58,6 +58,22 @@ export interface KiaraOptions {
     skipBump: boolean;
 
     /**
+     * Skips the commit and tag push process.
+     *
+     * @cli --skip-push
+     * @default false
+     */
+    skipPush: boolean;
+
+    /**
+     * Skips the release creation process.
+     *
+     * @cli --skip-release
+     * @default false
+     */
+    skipRelease: boolean;
+
+    /**
      * Authentication token for Git operations and releases.
      *
      * @cli --token, -t

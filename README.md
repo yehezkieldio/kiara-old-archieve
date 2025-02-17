@@ -79,6 +79,8 @@ The available CLI flags are as follows:
 - `-r, --release-type`: Specify the release type for manual version bump. Default is empty, which prompts for release type. Options are `major`, `minor`, or `patch`.
 - `-t, --token`: GitHub token for creating releases. Default is empty.
 - `--skip-bump`: Skip version bumping and use the current version.
+- `--skip-push`: Skip the commit and tag push process.
+- `--skip-release`: Skip the GitHub release creation process.
 - `--dry-run`: Perform a dry run without making changes.
 
 ### GitHub Release
@@ -86,11 +88,11 @@ The available CLI flags are as follows:
 Kiara supports creating GitHub releases, which requires a GitHub token *(either a personal access or fine-grained token)*. You can provide the token via the `GITHUB_TOKEN` environment variable or the `--token` flag. Ensure that the token has the necessary permissions to create releases.
 
 ```bash
-GITHUB_TOKEN=<token> bunx kiara --token <token>
+GITHUB_TOKEN=<token> bunx kiara # or --token <token>
 ```
 
 ## License and Attributions
 
 Kiara is inspired by various release tools and workflows, including [semantic-release](https://github.com/semantic-release/semantic-release), [standard-version](https://github.com/conventional-changelog/standard-version), [cliff-jumper](https://github.com/favware/cliff-jumper), [release-it](https://github.com/release-it/release-it), and [bumpp](https://github.com/antfu-collective/bumpp), among others.
 
-Kiara is licensed under the MIT License. See the [LICENSE](LICENSE) file for more information.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more information.

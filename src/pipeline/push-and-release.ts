@@ -79,6 +79,21 @@ function createGitHubRelease(context: KiaraContext): ResultAsync<KiaraContext, E
 }
 
 export function pushAndRelease(context: KiaraContext): ResultAsync<KiaraContext, Error> {
+    if (context.options.skipPush) {
+        logger.info("Skipping push and directly creating GitHub release.");
+        return createGitHubRelease(context);
+    }
+
+    if (context.options.skipRelease) {
+        logger.info("Skipping release creation and directly pushing changes.");
+        return pushCommitAndTag(context);
+    }
+
+    if (context.options.skipPush && context.options.skipRelease) {
+        logger.info("Proceeding with both push and release.");
+        return okAsync(context);
+    }
+
     return pushCommitAndTag(context)
         .andThen(createGitHubRelease)
         .map((): KiaraContext => context);
