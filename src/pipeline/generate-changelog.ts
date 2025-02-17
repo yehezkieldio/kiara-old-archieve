@@ -21,7 +21,7 @@ function prepareChangelogContent(context: KiaraContext): ResultAsync<undefined, 
 
     const gitCliffOptions: GitCliffOptions = {
         tag: resolveTagTemplate(context),
-        prepend: context.changelog.path,
+        prepend: context.options.dryRun ? context.changelog.path : "",
         unreleased: true,
         config: CWD_GIT_CLIFF_PATH,
         output: "-",
