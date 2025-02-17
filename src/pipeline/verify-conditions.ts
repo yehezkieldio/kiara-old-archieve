@@ -1,5 +1,4 @@
 import type { Octokit } from "@octokit/core";
-import { execa } from "execa";
 import { ResultAsync, errAsync, okAsync } from "neverthrow";
 import type { KiaraContext } from "#/kiara";
 import { CWD_GIT_CLIFF_PATH } from "#/libs/const";
@@ -24,6 +23,11 @@ function preflightEnvironment(context: KiaraContext): ResultAsync<KiaraContext, 
  * @param context The Kiara context.
  */
 function checkGitCliffConfig(context: KiaraContext): ResultAsync<KiaraContext, Error> {
+    if (context.options.dryRun) {
+        logger.verbose("Skipping cliff.toml check in dry-run mode");
+        return okAsync(context);
+    }
+
     return fileExists(CWD_GIT_CLIFF_PATH)
         .andTee(() => logger.verbose("Checking for cliff.toml in the current working directory."))
         .andThen((exists) => {
@@ -47,18 +51,19 @@ function preflightGit(context: KiaraContext): ResultAsync<KiaraContext, Error> {
  * @param context The Kiara context.
  */
 function checkGitRepository(context: KiaraContext): ResultAsync<KiaraContext, Error> {
-    return ResultAsync.fromPromise(
-        execa("git", ["rev-parse", "--is-inside-work-tree"], { cwd: process.cwd() }),
-        (error: unknown): Error => new Error(`Error checking for git repository: ${error}`)
-    )
-        .andTee(({ command }): void => logger.verbose(`Checking for git repository: ${command}`))
-        .andThen((result): ResultAsync<KiaraContext, Error> => {
-            return result.stdout === "true"
-                ? okAsync(context)
-                : errAsync(
-                      new Error("Could not find a git repository in the current working directory.")
-                  );
-        });
+    return executeGitCommand(
+        ["rev-parse", "--is-inside-work-tree"],
+        context,
+        "Error checking for git repository"
+    ).andThen((result): ResultAsync<KiaraContext, Error> => {
+        return context.options.dryRun
+            ? okAsync(context)
+            : result.stdout === "true"
+              ? okAsync(context)
+              : errAsync(
+                    new Error("Could not find a git repository in the current working directory.")
+                );
+    });
 }
 
 /**
@@ -71,11 +76,6 @@ function checkUncommittedChanges(context: KiaraContext): ResultAsync<KiaraContex
         context,
         "Error checking for uncommitted changes"
     ).andThen((result): ResultAsync<KiaraContext, Error> => {
-        // return result.stdout === ""
-        //     ? okAsync(context)
-        //     : errAsync(
-        //           new Error("There are uncommitted changes in the current working directory.")
-        //       );
         return context.options.dryRun
             ? okAsync(context)
             : result.stdout === ""
@@ -91,6 +91,11 @@ function checkUncommittedChanges(context: KiaraContext): ResultAsync<KiaraContex
  * @param context The Kiara context.
  */
 function checkGithubToken(context: KiaraContext): ResultAsync<KiaraContext, Error> {
+    if (context.options.dryRun) {
+        logger.verbose("Skipping GitHub token verification in dry-run mode");
+        return okAsync(context);
+    }
+
     const octokit: ResultAsync<Octokit, unknown> = getGitToken(context).asyncAndThen(createOctokit);
 
     return octokit
