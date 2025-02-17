@@ -4,7 +4,7 @@ import type { ReleaseType } from "semver";
 import semver from "semver";
 import type { KiaraContext } from "#/kiara";
 import { CWD } from "#/libs/const";
-import { logger } from "#/libs/logger";
+import { color, logger } from "#/libs/logger";
 
 const RELEASE_TYPES: string[] = ["patch", "minor", "major"];
 
@@ -160,9 +160,14 @@ function getVersion(
 }
 
 export function getRecommendedVersion(context: KiaraContext): ResultAsync<string, Error> {
-    return getConventionalBump().andThen(
-        (recommendation: BumperRecommendation): ResultAsync<string, Error> => {
+    return getConventionalBump()
+        .andTee((): void => console.log(" "))
+        .andTee((recommendation: BumperRecommendation): void =>
+            logger.info(
+                `Version bump recommendation: ${color.cyan(recommendation.releaseType as string)} (${color.dim(recommendation.reason as string)})`
+            )
+        )
+        .andThen((recommendation: BumperRecommendation): ResultAsync<string, Error> => {
             return getVersion(context.version.current, recommendation);
-        }
-    );
+        });
 }
