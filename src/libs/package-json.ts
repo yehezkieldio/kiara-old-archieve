@@ -17,7 +17,8 @@ export interface PackageJson {
 export function getPackageJson(path: string): ResultAsync<PackageJson, Error> {
     return ResultAsync.fromPromise(
         Bun.file(path).json(),
-        (error: unknown): Error => new Error(`Failed to read package.json: ${error}`)
+        (): Error =>
+            new Error("Could not find a valid package.json file in the current working directory!")
     );
 }
 
