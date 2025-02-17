@@ -4,6 +4,7 @@ import type { KiaraContext } from "#/kiara";
 import { CWD_GIT_CLIFF_PATH } from "#/libs/const";
 import { logger } from "#/libs/logger";
 import {
+    createFileIfNotExists,
     extractRepositoryMetadata,
     flattenMultilineText,
     getGitToken,
@@ -14,6 +15,11 @@ import { updateChangelogContent } from "#/tasks/context";
 
 function prepareChangelogContent(context: KiaraContext): ResultAsync<KiaraContext, Error> {
     logger.info("Generating changelog...");
+
+    createFileIfNotExists(context.changelog.path).mapErr((error: Error): Error => {
+        logger.error("Error creating changelog file:", error);
+        return error;
+    });
 
     const gitCliffOptions: GitCliffOptions = {
         tag: resolveTagTemplate(context),

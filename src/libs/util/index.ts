@@ -15,6 +15,23 @@ export function fileExists(path: string): ResultAsync<boolean, Error> {
 }
 
 /**
+ * Create a file if it does not exist.
+ * @param path The path to the file.
+ */
+export function createFileIfNotExists(path: string): ResultAsync<boolean, Error> {
+    return fileExists(path).andThen((exists) => {
+        if (exists) {
+            return okAsync(true);
+        }
+
+        return ResultAsync.fromPromise(
+            Bun.write(path, ""),
+            (error: unknown): Error => new Error(`Error creating file: ${error}`)
+        ).map(() => true);
+    });
+}
+
+/**
  * Executes a Git command in the specified context.
  * @param command The Git command to execute.
  * @param context The Kiara context.
