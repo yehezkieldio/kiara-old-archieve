@@ -1,10 +1,11 @@
 #!/usr/bin/env bun
 
 import { type Command, createCommand } from "commander";
-import { type ResultAsync, okAsync } from "neverthrow";
+import type { ResultAsync } from "neverthrow";
 import type { KiaraOptions } from "#/kiara";
 import { color } from "#/libs/logger";
 import { INTERNAL } from "#/libs/util/internal";
+import { initializePipeline } from "#/pipeline/initialize-pipeline";
 
 const program: Command = createCommand();
 const afterText: string = `\nFor more information, visit ${INTERNAL.HOMEPAGE}.`;
@@ -19,8 +20,8 @@ program
     .option("-n, --name [string]", "Project or package name to release.", "")
     .option("-b, --bump-strategy [string]", "Version bump strategy. (recommended|manual)", "")
     .option("-t, --token [string]", "The authentication token to use for GitHub API requests.", "")
-    .action((_options: KiaraOptions): Promise<void> => {
-        return new Promise<void>((): ResultAsync<void, void> => okAsync(undefined));
+    .action((options: KiaraOptions): Promise<void> => {
+        return new Promise<void>((): ResultAsync<void, Error> => initializePipeline(options));
     })
     .addHelpText("after", afterText);
 
