@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.6] - 2025-02-17
+
+### 🚜 Refactor
+
+- Move pipeline context assignment for better flow
+
 ## [0.0.5] - 2025-02-17
 
 ### 🚀 Features

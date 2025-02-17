@@ -1,6 +1,6 @@
 {
     "name": "@amarislabs/kiara",
-    "version": "0.0.5",
+    "version": "0.0.6",
     "type": "module",
     "description": "CLI orchestrator for managing releases, versioning, and changelog generation.",
     "main": "src/cli.ts",
