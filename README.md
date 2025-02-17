@@ -11,7 +11,7 @@
 
 Kiara is an **opinionated** CLI orchestrator designed for managing releases, including *semantic* versioning, and generating changelogs powered by `git-cliff`. It streamlines the release process with built-in automation and best practices, ensuring a structured and efficient workflow.
 
-<img src=".github/assets/dry-run.jpg" align="center">
+<img src="https://raw.githubusercontent.com/amarislabs/kiara/refs/heads/master/.github/assets/dry-run.jpg" align="center">
 
 > [!NOTE]
 > Kiara is currently under development and not yet production-ready. Many features are still in progress, and the release process may change as development continues.
