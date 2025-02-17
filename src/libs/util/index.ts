@@ -21,7 +21,11 @@ export function getGitToken(context: KiaraContext): Result<string, Error> {
     const token: string = context.options.token || process.env.GITHUB_TOKEN || "";
 
     if (!token.trim()) {
-        return err(new Error("No authentication token provided."));
+        return err(
+            new Error(
+                "No authentication token provided. Please set a GITHUB_TOKEN or via the --token option"
+            )
+        );
     }
 
     return ok(token);
@@ -55,13 +59,16 @@ export function getRepositoryUrl(): ResultAsync<string, Error> {
     ).map((result): string => result.stdout.trim());
 }
 
+export interface RepositoryMetadata {
+    owner: string;
+    name: string;
+}
+
 /**
  * Extract the owner and name of a GitHub repository from a URL.
  * @param url The repository URL.
  */
-export function extractRepositoryMetadata(
-    url: string
-): Result<{ owner: string; name: string }, Error> {
+export function extractRepositoryMetadata(url: string): Result<RepositoryMetadata, Error> {
     const cleanUrl: string = url.trim().replace(/\.git$/, "");
 
     const sshMatch: RegExpMatchArray | null = cleanUrl.match(/^git@github\.com:([^/]+)\/(.+)$/);
