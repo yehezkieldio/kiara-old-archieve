@@ -1,10 +1,17 @@
-import { ResultAsync } from "neverthrow";
+import { ResultAsync, okAsync } from "neverthrow";
 import type { BumpStrategy, KiaraContext } from "#/kiara";
-import { logger } from "#/libs/logger";
+import { color, logger } from "#/libs/logger";
 import { updateNewVersion } from "#/tasks/context";
 import { getManualVersion, getRecommendedVersion } from "#/tasks/version";
 
 export function selectBumpStrategy(context: KiaraContext): ResultAsync<KiaraContext, Error> {
+    if (context.options.skipBump) {
+        logger.info(
+            `Skipping version bump. Using current version ${color.dim(context.version.current)}.`
+        );
+        return okAsync(context);
+    }
+
     return context.options.bumpStrategy
         ? ResultAsync.fromPromise(
               Promise.resolve(context.options.bumpStrategy),

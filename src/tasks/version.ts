@@ -70,6 +70,7 @@ function getIncrementalBumps(currentVersion: string): VersionSelectOption[] {
 function promptManualVersion(context: KiaraContext): ResultAsync<string, Error> {
     const versions: VersionSelectOption[] = getIncrementalBumps(context.version.current);
 
+    logger.verbose(`Available version bumps: ${JSON.stringify(versions)}`);
     return ResultAsync.fromPromise(
         logger.prompt("Recommended version bump", {
             type: "select",
@@ -82,7 +83,39 @@ function promptManualVersion(context: KiaraContext): ResultAsync<string, Error> 
     );
 }
 
+/**
+ * Get an existing release type from the options.
+ * @param currentVersion The current version
+ * @param releaseType The release type
+ */
+function getVersionFromReleaseType(
+    currentVersion: string,
+    releaseType: ReleaseType
+): ResultAsync<string, Error> {
+    return ResultAsync.fromPromise(
+        Promise.resolve(semver.inc(currentVersion, releaseType)),
+        (error: unknown): Error =>
+            new Error(`Failed to increment version with release type ${releaseType}: ${error}`)
+    ).map((version: string | null): string => {
+        if (!version) {
+            throw new Error(`Invalid version increment: ${currentVersion} with ${releaseType}`);
+        }
+        return version;
+    });
+}
+
 export function getManualVersion(context: KiaraContext): ResultAsync<string, Error> {
+    if (context.options.releaseType) {
+        return getVersionFromReleaseType(
+            context.version.current,
+            context.options.releaseType
+        ).andTee((version: string): void => {
+            logger.info(
+                `Using specified release type: ${color.cyan(context.options.releaseType)} -> ${color.cyan(version)}`
+            );
+        });
+    }
+
     return promptManualVersion(context)
         .andTee((): void => console.log(" "))
         .andThen((nextVersion: string): ResultAsync<string, Error> => {
@@ -91,6 +124,9 @@ export function getManualVersion(context: KiaraContext): ResultAsync<string, Err
                 (error: unknown): Error =>
                     new Error(`Failed to get selected version bump: ${error}`)
             );
+        })
+        .andTee((version: string): void => {
+            logger.verbose(`Selected version bump: ${version}`);
         });
 }
 
@@ -169,8 +205,9 @@ export function getRecommendedVersion(context: KiaraContext): ResultAsync<string
 
     return pipelineWithSpacing
         .andTee((recommendation: BumperRecommendation) => {
+            logger.verbose(`Received recommendation: ${JSON.stringify(recommendation)}`);
             logger.info(
-                `Version bump recommendation: ${color.cyan(recommendation.releaseType as string)} (${color.dim(recommendation.reason as string)})`
+                `Using recommended release type: ${color.cyan(recommendation.releaseType as string)} (${color.dim(recommendation.reason as string)})`
             );
         })
         .andThen(

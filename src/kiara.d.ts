@@ -7,6 +7,8 @@
  */
 export type BumpStrategy = "recommended" | "manual";
 
+export type ReleaseType = "major" | "minor" | "patch";
+
 /**
  * CLI command options.
  *
@@ -37,6 +39,15 @@ export interface KiaraOptions {
      * @default "" - Will prompt for version.
      */
     bumpStrategy: BumpStrategy;
+
+    /**
+     * If manual bump strategy is selected, this option specifies the release type.
+     * If not specified, the user will be prompted to select the release type.
+     *
+     * @cli --release-type, -r
+     * @default "" - Will prompt for release type.
+     */
+    releaseType: ReleaseType;
 
     /**
      * Skips the version bump process and uses the current version.

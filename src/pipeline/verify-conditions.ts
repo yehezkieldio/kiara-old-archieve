@@ -8,7 +8,11 @@ import { logger } from "#/libs/logger";
 import { fileExists, getGitToken } from "#/libs/util";
 
 export function verifyConditions(context: KiaraContext): ResultAsync<KiaraContext, Error> {
-    return preflightEnvironment(context).andThen(preflightGit);
+    return preflightEnvironment(context)
+        .andThen(preflightGit)
+        .andTee(() => {
+            logger.info("All preflight checks passed.");
+        });
 }
 
 function preflightEnvironment(context: KiaraContext): ResultAsync<KiaraContext, Error> {

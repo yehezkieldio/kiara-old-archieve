@@ -1,6 +1,6 @@
 import { execa } from "execa";
 import { type Result, ResultAsync, err, ok } from "neverthrow";
-import type { KiaraContext } from "#/kiara";
+import type { BumpStrategy, KiaraContext, KiaraOptions, ReleaseType } from "#/kiara";
 
 /**
  * Check if a file exists.
@@ -89,5 +89,67 @@ export function extractRepositoryMetadata(url: string): Result<RepositoryMetadat
         new Error(
             "Invalid repository URL format. Expected SSH (git@github.com:owner/repo) or HTTPS (https://github.com/owner/repo)"
         )
+    );
+}
+
+/**
+ * Validate the release type.
+ * @param releaseType The release type to validate.
+ */
+function validateReleaseType(releaseType: string): Result<ReleaseType, Error> {
+    const validTypes = new Set(["major", "minor", "patch"]);
+
+    if (!releaseType) return ok("" as ReleaseType);
+    if (!validTypes.has(releaseType)) {
+        return err(new Error("Invalid release type. Must be one of: major, minor, patch"));
+    }
+
+    return ok(releaseType as ReleaseType);
+}
+
+/**
+ * Validate the bump strategy.
+ * @param strategy The bump strategy.
+ */
+function validateBumpStrategy(strategy: string): Result<BumpStrategy, Error> {
+    const validStrategies = new Set(["recommended", "manual"]);
+
+    if (!strategy || strategy === "") return ok("" as BumpStrategy);
+    if (!validStrategies.has(strategy)) {
+        return err(new Error("Invalid bump strategy. Must be one of: recommended, manual"));
+    }
+
+    return ok(strategy as BumpStrategy);
+}
+
+/**
+ * Validate the strategy and release type pair.
+ * @param strategy The bump strategy
+ * @param releaseType The release type
+ */
+function validateStrategyReleaseTypePair(
+    strategy: BumpStrategy,
+    releaseType: ReleaseType
+): Result<ReleaseType, Error> {
+    if (strategy === "recommended") {
+        return ok("" as ReleaseType);
+    }
+    return ok(releaseType);
+}
+
+/**
+ * Validates the options provided.
+ * @param options The options to validate.
+ */
+export function validateOptions(options: KiaraOptions): Result<KiaraOptions, Error> {
+    return validateBumpStrategy(options.bumpStrategy).andThen(
+        (validStrategy: BumpStrategy): Result<KiaraOptions, Error> =>
+            validateReleaseType(options.releaseType).andThen((validType: ReleaseType) =>
+                validateStrategyReleaseTypePair(validStrategy, validType).map(() => ({
+                    ...options,
+                    bumpStrategy: validStrategy,
+                    releaseType: validType,
+                }))
+            )
     );
 }

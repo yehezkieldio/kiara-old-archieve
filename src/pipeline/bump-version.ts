@@ -13,9 +13,6 @@ export function bumpVersion(context: KiaraContext): ResultAsync<KiaraContext, Er
     }
 
     if (context.options.skipBump) {
-        logger.info(
-            `Skipping version bump. Using current version ${color.dim(context.version.current)}.`
-        );
         return okAsync(context);
     }
 

@@ -2,6 +2,7 @@ import { LogLevels } from "consola";
 import type { ResultAsync } from "neverthrow";
 import type { KiaraOptions } from "#/kiara";
 import { color, logger } from "#/libs/logger";
+import { validateOptions } from "#/libs/util";
 import { INTERNAL } from "#/libs/util/internal";
 import { bumpVersion } from "#/pipeline/bump-version";
 import { createContext } from "#/pipeline/create-context";
@@ -17,7 +18,8 @@ export function initializePipeline(options: KiaraOptions): ResultAsync<void, Err
     logger.info(`Running ${color.magenta("kiara")} version ${color.dim(INTERNAL.VERSION)}`);
     logger.verbose(`Options: ${JSON.stringify(options)}`);
 
-    return createContext(options)
+    return validateOptions(options)
+        .asyncAndThen(createContext)
         .andThen(verifyConditions)
         .andThen(selectBumpStrategy)
         .andThen(bumpVersion)

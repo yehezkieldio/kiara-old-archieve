@@ -19,7 +19,13 @@ program
     .option("-v, --verbose", "Run in verbose mode.")
     .option("-n, --name [string]", "Project or package name to release.", "")
     .option("-b, --bump-strategy [string]", "Version bump strategy. (recommended|manual)", "")
+    .option(
+        "-r, --release-type [string]",
+        "Release type for manual bump strategy. (major|minor|patch)",
+        ""
+    )
     .option("-t, --token [string]", "The authentication token to use for GitHub API requests.", "")
+    .option("--skip-bump", "Skip the version bump process.")
     .option("--dry-run", "Run in dry run mode.")
     .action((options: KiaraOptions): Promise<void> => {
         return new Promise<void>((): ResultAsync<void, Error> => initializePipeline(options));
