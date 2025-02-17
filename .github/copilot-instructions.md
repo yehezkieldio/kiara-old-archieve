@@ -1,0 +1,3 @@
+Write code in a functional style with a Rust-inspired approach. Always use functions over classes, preferring the function keyword over arrow functions. Emphasize immutability and pure functions, ensuring side effects are properly managed. Avoid try/catch blocks; instead, handle errors using Railway Oriented Programming (ROP) for clear and predictable control flow.
+
+Prioritize Locality of Behavior, meaning each unit of code should be understandable on its own without needing to reference other parts of the codebase. Keep function definitions clear and expressive to eliminate the need for excessive comments. Maintain a concise, readable structure that naturally conveys intent, ensuring the code remains self-documenting.
