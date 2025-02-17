@@ -18,6 +18,7 @@ export function createDefaultContext(options: KiaraOptions): Result<KiaraContext
         },
         changelog: {
             path: "CHANGELOG.md",
+            content: "",
         },
     };
 
@@ -59,6 +60,21 @@ export function updateNewVersion(context: KiaraContext, newVersion: string): Kia
         version: {
             ...context.version,
             new: newVersion,
+        },
+    };
+}
+
+/**
+ * Updates the content of the changelog in the context.
+ * @param context The current context.
+ * @param content The new content to set in the changelog.
+ */
+export function updateChangelogContent(context: KiaraContext, content: string): KiaraContext {
+    return {
+        ...context,
+        changelog: {
+            ...context.changelog,
+            content,
         },
     };
 }

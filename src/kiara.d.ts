@@ -139,5 +139,10 @@ export interface KiaraContext {
          * @default "CHANGELOG.md"
          */
         path: string;
+
+        /**
+         * The content of the changelog.
+         */
+        content: string;
     };
 }

@@ -10,8 +10,9 @@ import {
     getRepositoryUrl,
     resolveTagTemplate,
 } from "#/libs/util";
+import { updateChangelogContent } from "#/tasks/context";
 
-function prepareChangelogContent(context: KiaraContext): ResultAsync<undefined, Error> {
+function prepareChangelogContent(context: KiaraContext): ResultAsync<KiaraContext, Error> {
     logger.info("Generating changelog...");
 
     const gitCliffOptions: GitCliffOptions = {
@@ -42,9 +43,9 @@ function prepareChangelogContent(context: KiaraContext): ResultAsync<undefined, 
         .andTee((result) => {
             logger.verbose(`Changelog content: ${flattenMultilineText(result.stdout)}`);
         })
-        .map(() => {
+        .map(({ stdout }) => {
             logger.info("Changelog generated successfully!");
-            return undefined;
+            return updateChangelogContent(context, stdout);
         })
         .mapErr((error: unknown): Error => {
             logger.error("Failed to generate changelog:", error);
@@ -53,5 +54,5 @@ function prepareChangelogContent(context: KiaraContext): ResultAsync<undefined, 
 }
 
 export function generateChangelog(context: KiaraContext): ResultAsync<KiaraContext, Error> {
-    return prepareChangelogContent(context).map(() => context);
+    return prepareChangelogContent(context);
 }
