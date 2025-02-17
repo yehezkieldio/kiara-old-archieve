@@ -1,5 +1,5 @@
 import { type Options as GitCliffOptions, runGitCliff } from "git-cliff";
-import { ResultAsync, okAsync } from "neverthrow";
+import { ResultAsync } from "neverthrow";
 import type { KiaraContext } from "#/kiara";
 import { CWD_GIT_CLIFF_PATH } from "#/libs/const";
 import { logger } from "#/libs/logger";
@@ -14,18 +14,16 @@ import {
 function prepareChangelogContent(context: KiaraContext): ResultAsync<undefined, Error> {
     logger.info("Generating changelog...");
 
-    if (context.options.dryRun) {
-        logger.info("Dry run enabled, skipping changelog generation");
-        return okAsync(undefined);
-    }
-
     const gitCliffOptions: GitCliffOptions = {
         tag: resolveTagTemplate(context),
-        prepend: context.options.dryRun ? context.changelog.path : "",
         unreleased: true,
         config: CWD_GIT_CLIFF_PATH,
         output: "-",
     };
+
+    if (!context.options.dryRun) {
+        gitCliffOptions.prepend = context.changelog.path;
+    }
 
     getGitToken(context).map((token) => {
         gitCliffOptions.githubToken = token;

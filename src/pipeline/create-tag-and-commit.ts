@@ -1,5 +1,4 @@
-import { execa } from "execa";
-import { ResultAsync, errAsync, okAsync } from "neverthrow";
+import { type ResultAsync, errAsync, okAsync } from "neverthrow";
 import type { KiaraContext } from "#/kiara";
 import { logger } from "#/libs/logger";
 import { executeGitCommand, resolveCommitMessage, resolveTagTemplate } from "#/libs/util";
@@ -27,16 +26,17 @@ function commitRelease(context: KiaraContext): ResultAsync<KiaraContext, Error> 
     const commitMessage: string = resolveCommitMessage(context);
 
     return executeGitCommand(
-        ["commit", "--no-verify", "-m", commitMessage],
+        ["commit", "--no-verify", "-m", `"${commitMessage}"`],
         context,
         "Error committing changes"
     ).map(() => context);
 }
 
-function canSignGitTags(): ResultAsync<boolean, Error> {
-    return ResultAsync.fromPromise(
-        execa("git", ["config", "--get", "user.signingkey"], { cwd: process.cwd() }),
-        () => new Error("Error checking for GPG key")
+function canSignGitTags(context: KiaraContext): ResultAsync<boolean, Error> {
+    return executeGitCommand(
+        ["config", "--get", "user.signingkey"],
+        context,
+        "Error checking for GPG key"
     ).map((result) => result.stdout.length > 0);
 }
 
@@ -46,9 +46,9 @@ function createTag(context: KiaraContext): ResultAsync<KiaraContext, Error> {
     const tagName: string = resolveTagTemplate(context);
     const tagMessage = `Release ${tagName}`;
 
-    return canSignGitTags()
+    return canSignGitTags(context)
         .map((canSign: boolean): string[] => {
-            const baseArgs: string[] = ["tag", "-a", tagName, "-m", tagMessage];
+            const baseArgs: string[] = ["tag", "-a", tagName, "-m", `"${tagMessage}"`];
             return canSign ? [...baseArgs, "-s"] : baseArgs;
         })
         .andThen((args: string[]) =>

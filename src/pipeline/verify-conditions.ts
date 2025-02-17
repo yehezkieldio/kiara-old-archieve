@@ -5,7 +5,7 @@ import type { KiaraContext } from "#/kiara";
 import { CWD_GIT_CLIFF_PATH } from "#/libs/const";
 import { createOctokit } from "#/libs/github";
 import { logger } from "#/libs/logger";
-import { fileExists, getGitToken } from "#/libs/util";
+import { executeGitCommand, fileExists, getGitToken } from "#/libs/util";
 
 export function verifyConditions(context: KiaraContext): ResultAsync<KiaraContext, Error> {
     return preflightEnvironment(context)
@@ -66,20 +66,24 @@ function checkGitRepository(context: KiaraContext): ResultAsync<KiaraContext, Er
  * @param context The Kiara context.
  */
 function checkUncommittedChanges(context: KiaraContext): ResultAsync<KiaraContext, Error> {
-    return ResultAsync.fromPromise(
-        execa("git", ["status", "--porcelain"], { cwd: process.cwd() }),
-        (error) => new Error(`Error checking for uncommitted changes: ${error}`)
-    )
-        .andTee(({ command }): void =>
-            logger.verbose(`Checking for uncommitted changes: ${command}`)
-        )
-        .andThen((result): ResultAsync<KiaraContext, Error> => {
-            return result.stdout === ""
-                ? okAsync(context)
-                : errAsync(
-                      new Error("There are uncommitted changes in the current working directory.")
-                  );
-        });
+    return executeGitCommand(
+        ["status", "--porcelain"],
+        context,
+        "Error checking for uncommitted changes"
+    ).andThen((result): ResultAsync<KiaraContext, Error> => {
+        // return result.stdout === ""
+        //     ? okAsync(context)
+        //     : errAsync(
+        //           new Error("There are uncommitted changes in the current working directory.")
+        //       );
+        return context.options.dryRun
+            ? okAsync(context)
+            : result.stdout === ""
+              ? okAsync(context)
+              : errAsync(
+                    new Error("There are uncommitted changes in the current working directory.")
+                );
+    });
 }
 
 /**
@@ -110,18 +114,19 @@ function checkGithubToken(context: KiaraContext): ResultAsync<KiaraContext, Erro
  * @param context The Kiara context.
  */
 function checkUpstreamBranch(context: KiaraContext): ResultAsync<KiaraContext, Error> {
-    return ResultAsync.fromPromise(
-        execa("git", ["rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}"]),
-        (error) => new Error(`Error checking upstream branch: ${error}`)
-    )
-        .andTee(({ command }): void => logger.verbose(`Checking upstream branch: ${command}`))
-        .andThen((result): ResultAsync<KiaraContext, Error> => {
-            return result.stdout !== ""
-                ? okAsync(context)
-                : errAsync(
-                      new Error(
-                          "No upstream branch found. Please set an upstream branch before running this command."
-                      )
-                  );
-        });
+    return executeGitCommand(
+        ["rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}"],
+        context,
+        "Error checking upstream branch"
+    ).andThen((result): ResultAsync<KiaraContext, Error> => {
+        return context.options.dryRun
+            ? okAsync(context)
+            : result.stdout !== ""
+              ? okAsync(context)
+              : errAsync(
+                    new Error(
+                        "No upstream branch found. Please set an upstream branch before running this command."
+                    )
+                );
+    });
 }

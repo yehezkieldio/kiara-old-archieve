@@ -1,7 +1,6 @@
 import { type Result, type ResultAsync, okAsync } from "neverthrow";
 import type { KiaraContext, KiaraOptions } from "#/kiara";
 import { CWD_PACKAGE_PATH } from "#/libs/const";
-import { logger } from "#/libs/logger";
 import { getPackageJson, getPackageName, getPackageVersion } from "#/libs/package-json";
 import {
     type RepositoryMetadata,
@@ -16,10 +15,7 @@ export function createContext(options: KiaraOptions): ResultAsync<KiaraContext, 
         .andThen(enrichWithToken)
         .asyncAndThen(enrichWithVersion)
         .andThen(enrichWithPackageName)
-        .andThen(enrichWithRepository)
-        .andTee((context: KiaraContext) =>
-            logger.verbose(`Initial Context: ${JSON.stringify(context)}`)
-        );
+        .andThen(enrichWithRepository);
 }
 
 /**
