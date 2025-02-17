@@ -41,6 +41,9 @@ const strategies: BumpSelectOption[] = [
 type StrategyHandler = (context: KiaraContext) => ResultAsync<KiaraContext, Error>;
 type StrategyHandlers = Record<BumpStrategy, StrategyHandler>;
 
+/**
+ * The strategy handlers for the version bump
+ */
 function getStrategyHandlers(): StrategyHandlers {
     return {
         recommended: (context: KiaraContext): ResultAsync<KiaraContext, Error> =>
@@ -54,6 +57,11 @@ function getStrategyHandlers(): StrategyHandlers {
     };
 }
 
+/**
+ * Execute the selected version bump strategy
+ * @param context The Kiara context
+ * @param strategy The selected version bump strategy
+ */
 function executeStrategy(
     context: KiaraContext,
     strategy: BumpStrategy
@@ -62,6 +70,9 @@ function executeStrategy(
     return handlers[strategy](context);
 }
 
+/**
+ * Prompt the user to select the version bump strategy
+ */
 function promptStrategy(): ResultAsync<BumpStrategy, Error> {
     return ResultAsync.fromPromise(
         logger.prompt("Pick a version strategy", {

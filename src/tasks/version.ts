@@ -47,6 +47,10 @@ interface CommitBase {
 
 type Commit = CommitBase & CommitMeta;
 
+/**
+ * Get a list of incremental bumps from the current version
+ * @param currentVersion The current version
+ */
 function getIncrementalBumps(currentVersion: string): VersionSelectOption[] {
     const types = CHOICES.default as ReleaseType[];
 
@@ -59,6 +63,10 @@ function getIncrementalBumps(currentVersion: string): VersionSelectOption[] {
     return choices;
 }
 
+/**
+ * Prompt the user to select the version bump manually
+ * @param context The Kiara context
+ */
 function promptManualVersion(context: KiaraContext): ResultAsync<string, Error> {
     const versions: VersionSelectOption[] = getIncrementalBumps(context.version.current);
 
@@ -86,6 +94,9 @@ export function getManualVersion(context: KiaraContext): ResultAsync<string, Err
         });
 }
 
+/**
+ * Use conventional-recommended-bump to get the recommended version bump
+ */
 function getConventionalBump(): ResultAsync<BumperRecommendation, Error> {
     const conventionalOptions = {
         headerPattern: /^(\w*)(?:\((.*)\))?: (.*)$/,
@@ -133,6 +144,11 @@ function getConventionalBump(): ResultAsync<BumperRecommendation, Error> {
     );
 }
 
+/**
+ * Get the version based on the current version and the recommended bump
+ * @param currentVersion The current version
+ * @param recommended The recommended bump
+ */
 function getVersion(
     currentVersion: string,
     recommended: BumperRecommendation
