@@ -53,6 +53,11 @@ export interface KiaraOptions {
      * @default ""
      */
     token: string;
+
+    /**
+     * Dry run mode. Does not perform any write operations.
+     */
+    dryRun: boolean;
 }
 
 /**

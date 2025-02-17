@@ -20,6 +20,7 @@ program
     .option("-n, --name [string]", "Project or package name to release.", "")
     .option("-b, --bump-strategy [string]", "Version bump strategy. (recommended|manual)", "")
     .option("-t, --token [string]", "The authentication token to use for GitHub API requests.", "")
+    .option("--dry-run", "Run in dry run mode.")
     .action((options: KiaraOptions): Promise<void> => {
         return new Promise<void>((): ResultAsync<void, Error> => initializePipeline(options));
     })
