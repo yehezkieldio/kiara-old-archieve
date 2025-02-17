@@ -6,7 +6,7 @@
         "indentStyle": "space",
         "indentWidth": 4,
         "lineEnding": "lf",
-        "lineWidth": 80,
+        "lineWidth": 100,
         "attributePosition": "multiline"
     },
     "organizeImports": {
@@ -107,7 +107,7 @@
             "indentWidth": 4,
             "jsxQuoteStyle": "double",
             "lineEnding": "lf",
-            "lineWidth": 80,
+            "lineWidth": 100,
             "quoteProperties": "asNeeded",
             "quoteStyle": "double",
             "semicolons": "always",

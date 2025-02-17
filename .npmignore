@@ -58,3 +58,8 @@ dist
 .pnp.*
 .idea
 .DS_Store
+.github
+.vscode
+biome.json
+bun.lock
+renovate.json

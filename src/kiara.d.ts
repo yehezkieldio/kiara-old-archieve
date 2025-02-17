@@ -87,6 +87,18 @@ export interface KiaraContext {
      */
     git: {
         /**
+         * The commit message for the release.
+         * @default "chore(release): v{{version}}"
+         */
+        commitMessage: string;
+
+        /**
+         * The tag template for the release.
+         * @default "v{{version}}"
+         */
+        tagTemplate: string;
+
+        /**
          * Repository metadata.
          */
         repository: {
