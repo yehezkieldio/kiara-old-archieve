@@ -41,7 +41,7 @@ function prepareChangelogContent(context: KiaraContext): ResultAsync<undefined, 
         (error) => error
     )
         .andTee((result) => {
-            logger.verbose("Changelog content:", result);
+            logger.verbose("Changelog content:", result.stdout);
         })
         .map(() => {
             logger.info("Changelog generated successfully");
