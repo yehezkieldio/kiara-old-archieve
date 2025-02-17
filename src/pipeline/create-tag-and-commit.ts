@@ -41,7 +41,7 @@ function canSignGitTags(context: KiaraContext): ResultAsync<boolean, Error> {
 }
 
 function createTag(context: KiaraContext): ResultAsync<KiaraContext, Error> {
-    logger.info("Creating annotated tag...");
+    logger.info("Creating tag...");
 
     const tagName: string = resolveTagTemplate(context);
     const tagMessage = `Release ${tagName}`;
