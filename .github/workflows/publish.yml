@@ -27,4 +27,4 @@ jobs:
             - name: to GitHub
               run: bun publish --registry=https://npm.pkg.github.com
               env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  NPM_CONFIG_TOKEN: ${{ secrets.GITHUB_TOKEN }}
