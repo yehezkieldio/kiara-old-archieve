@@ -15,6 +15,9 @@ import { verifyConditions } from "#/pipeline/verify-conditions";
 export function initializePipeline(options: KiaraOptions): ResultAsync<void, Error> {
     if (options.verbose) logger.level = LogLevels.verbose;
 
+    logger.verbose(
+        "Verbose mode is enabled! This may expose sensitive information such as tokens into into the logs, please be cautious."
+    );
     logger.info(`Running ${color.magenta("kiara")} version ${color.dim(INTERNAL.VERSION)}`);
     logger.verbose(`Options: ${JSON.stringify(options)}`);
 
