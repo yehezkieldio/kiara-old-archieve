@@ -2,13 +2,7 @@
 
 import { sep } from "node:path";
 import { formatWithOptions } from "node:util";
-import type {
-    ConsolaInstance,
-    ConsolaOptions,
-    FormatOptions,
-    LogObject,
-    LogType,
-} from "consola";
+import type { ConsolaInstance, ConsolaOptions, FormatOptions, LogObject, LogType } from "consola";
 import { createConsola } from "consola";
 import type { ColorFunction, ColorName } from "consola/utils";
 import { colors, stripAnsi } from "consola/utils";
@@ -88,8 +82,7 @@ function formatError(err: unknown, opts: FormatOptions): string {
     const stack: string = err.stack ? formatStack(err.stack, opts) : "";
 
     const level: number = opts?.errorLevel || 0;
-    const causedPrefix: string =
-        level > 0 ? `${"  ".repeat(level)}[cause]: ` : "";
+    const causedPrefix: string = level > 0 ? `${"  ".repeat(level)}[cause]: ` : "";
     const causedError: string = err.cause
         ? `\n\n${formatError(err.cause, { ...opts, errorLevel: level + 1 })}`
         : "";
@@ -115,9 +108,7 @@ function formatTimestamp(date: Date): string {
 }
 
 function createBadgeStyle(payload: LogObject, typeColor: ColorName): string {
-    return color.bold(
-        getBgColor(typeColor)(color.black(` ${payload.type.toUpperCase()} `))
-    );
+    return color.bold(getBgColor(typeColor)(color.black(` ${payload.type.toUpperCase()} `)));
 }
 
 function createTextStyle(typePrefix: string, typeColor: ColorName): string {
@@ -180,9 +171,7 @@ function formatArgs(args: unknown[], opts: FormatOptions): string {
 
 function characterFormat(str: string): string {
     return str
-        .replace(/`([^`]+)`/g, (_: string, m: string | number): string =>
-            color.cyan(m)
-        )
+        .replace(/`([^`]+)`/g, (_: string, m: string | number): string => color.cyan(m))
         .replace(
             /\s+_([^_]+)_\s+/g,
             (_: string, m: string | number): string => ` ${color.underline(m)} `
@@ -208,9 +197,7 @@ function formatPayload(payload: LogObject, opts: FormatOptions): string {
         : [type, date, characterFormat(message)].join(" ");
 
     line = format;
-    line += characterFormat(
-        additional.length > 0 ? `\n${additional.join("\n")}` : ""
-    );
+    line += characterFormat(additional.length > 0 ? `\n${additional.join("\n")}` : "");
 
     return line;
 }
