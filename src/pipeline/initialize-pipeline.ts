@@ -5,6 +5,7 @@ import { color, logger } from "#/libs/logger";
 import { INTERNAL } from "#/libs/util/internal";
 import { createContext } from "#/pipeline/create-context";
 import { pushAndRelease } from "#/pipeline/push-and-release";
+import { verifyConditions } from "#/pipeline/verify-conditions";
 
 export function initializePipeline(options: KiaraOptions): ResultAsync<void, Error> {
     if (options.verbose) logger.level = LogLevels.verbose;
@@ -13,6 +14,7 @@ export function initializePipeline(options: KiaraOptions): ResultAsync<void, Err
     logger.verbose(`Options: ${JSON.stringify(options)}`);
 
     return createContext(options)
+        .andThen(verifyConditions)
         .andThen(pushAndRelease)
         .mapErr((error: Error): Error => {
             logger.error(error.message);
