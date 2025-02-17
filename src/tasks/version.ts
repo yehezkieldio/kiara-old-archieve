@@ -160,14 +160,21 @@ function getVersion(
 }
 
 export function getRecommendedVersion(context: KiaraContext): ResultAsync<string, Error> {
-    return getConventionalBump()
-        .andTee((): void => console.log(" "))
-        .andTee((recommendation: BumperRecommendation): void =>
+    // Split pipeline to conditionally add spacing based on prompt or options
+    const basePipeline: ResultAsync<BumperRecommendation, Error> = getConventionalBump();
+    const pipelineWithSpacing: ResultAsync<BumperRecommendation, Error> = context.options
+        .bumpStrategy
+        ? basePipeline
+        : basePipeline.andTee((): void => console.log(" "));
+
+    return pipelineWithSpacing
+        .andTee((recommendation: BumperRecommendation) => {
             logger.info(
                 `Version bump recommendation: ${color.cyan(recommendation.releaseType as string)} (${color.dim(recommendation.reason as string)})`
-            )
-        )
-        .andThen((recommendation: BumperRecommendation): ResultAsync<string, Error> => {
-            return getVersion(context.version.current, recommendation);
-        });
+            );
+        })
+        .andThen(
+            (recommendation: BumperRecommendation): ResultAsync<string, Error> =>
+                getVersion(context.version.current, recommendation)
+        );
 }
