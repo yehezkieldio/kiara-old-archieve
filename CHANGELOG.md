@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.2] - 2025-02-17
+
+### 🐛 Bug Fixes
+
+- Remove unnecessary quotes around commit message
+
+### 💼 Other
+
+- Add publish workflow and config
+
+### ⚙️ Miscellaneous Tasks
+
+- **README** Use githubusercontent link for preview
+
 ## [0.0.1] - 2025-02-17
 
 ### 🚀 Features
