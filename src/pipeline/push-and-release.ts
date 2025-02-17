@@ -78,8 +78,8 @@ function createGitHubRelease(context: KiaraContext): ResultAsync<KiaraContext, E
         });
 }
 
-export function pushAndRelease(context: KiaraContext): ResultAsync<void, Error> {
+export function pushAndRelease(context: KiaraContext): ResultAsync<KiaraContext, Error> {
     return pushCommitAndTag(context)
         .andThen(createGitHubRelease)
-        .map((): undefined => undefined);
+        .map((): KiaraContext => context);
 }

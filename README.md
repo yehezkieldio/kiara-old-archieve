@@ -83,7 +83,7 @@ The available CLI flags are as follows:
 
 ### GitHub Release
 
-Kiara supports creating GitHub releases, which requires a GitHub token *(either a personal access or fine-grained token)*. You can provide the token via the `GITHUB_TOKEN` environment variable or the `--github-token` flag. Ensure that the token has the necessary permissions to create releases.
+Kiara supports creating GitHub releases, which requires a GitHub token *(either a personal access or fine-grained token)*. You can provide the token via the `GITHUB_TOKEN` environment variable or the `--token` flag. Ensure that the token has the necessary permissions to create releases.
 
 ```bash
 GITHUB_TOKEN=<token> bunx kiara --token <token>
