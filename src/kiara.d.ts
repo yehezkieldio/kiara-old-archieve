@@ -8,7 +8,7 @@
 export type BumpStrategy = "recommended" | "manual";
 
 /**
- * Configuration options for Kiara release management.
+ * CLI command options.
  *
  * @interface KiaraOptions
  * @since 1.0.0
@@ -18,7 +18,7 @@ export interface KiaraOptions {
      * Enables detailed logging output during execution.
      *
      * @cli --verbose, -v
-     * @default false - Only log essential information
+     * @default false - Only log essential information.
      */
     verbose: boolean;
 
@@ -26,7 +26,7 @@ export interface KiaraOptions {
      * Project identifier used during the release process.
      *
      * @cli --name, -n
-     * @default "" - Will use the project name from package.json
+     * @default "" - Will use the project name from package.json.
      */
     name: string;
 
@@ -34,7 +34,7 @@ export interface KiaraOptions {
      * Controls how version bumps are determined.
      *
      * @cli --bump-strategy, -b
-     * @default "" - Will prompt for version
+     * @default "" - Will prompt for version.
      */
     bumpStrategy: BumpStrategy;
 
@@ -72,7 +72,7 @@ export interface KiaraContext {
      */
     version: {
         /**
-         * Current version of the project
+         * Current version of the project.
          */
         current: string;
 
