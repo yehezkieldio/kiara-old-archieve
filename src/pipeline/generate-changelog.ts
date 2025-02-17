@@ -5,6 +5,7 @@ import { CWD_GIT_CLIFF_PATH } from "#/libs/const";
 import { logger } from "#/libs/logger";
 import {
     extractRepositoryMetadata,
+    flattenMultilineText,
     getGitToken,
     getRepositoryUrl,
     resolveTagTemplate,
@@ -41,10 +42,10 @@ function prepareChangelogContent(context: KiaraContext): ResultAsync<undefined, 
         (error) => error
     )
         .andTee((result) => {
-            logger.verbose("Changelog content:", result.stdout);
+            logger.verbose(`Changelog content: ${flattenMultilineText(result.stdout)}`);
         })
         .map(() => {
-            logger.info("Changelog generated successfully");
+            logger.info("Changelog generated successfully!");
             return undefined;
         })
         .mapErr((error: unknown): Error => {

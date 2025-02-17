@@ -70,7 +70,6 @@ function getIncrementalBumps(currentVersion: string): VersionSelectOption[] {
 function promptManualVersion(context: KiaraContext): ResultAsync<string, Error> {
     const versions: VersionSelectOption[] = getIncrementalBumps(context.version.current);
 
-    logger.verbose(`Available version bumps: ${JSON.stringify(versions)}`);
     return ResultAsync.fromPromise(
         logger.prompt("Recommended version bump", {
             type: "select",

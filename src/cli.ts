@@ -16,7 +16,7 @@ program
     .description(INTERNAL.DESCRIPTION)
     .version(INTERNAL.VERSION, "-V, --version", "Print the version number.")
     .helpOption("-h, --help", "Print this help message.")
-    .option("-v, --verbose", "Run in verbose mode.")
+    .option("-v, --verbose", "Run in verbose mode, may expose sensitive information.")
     .option("-n, --name [string]", "Project or package name to release.", "")
     .option("-b, --bump-strategy [string]", "Version bump strategy. (recommended|manual)", "")
     .option(

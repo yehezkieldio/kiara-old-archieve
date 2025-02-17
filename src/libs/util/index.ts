@@ -153,3 +153,11 @@ export function validateOptions(options: KiaraOptions): Result<KiaraOptions, Err
             )
     );
 }
+
+export function flattenMultilineText(text: string): string {
+    return text
+        .split("\n")
+        .map((line: string): string => line.trim())
+        .filter((line: string): boolean => line.length > 0)
+        .join("\\n");
+}

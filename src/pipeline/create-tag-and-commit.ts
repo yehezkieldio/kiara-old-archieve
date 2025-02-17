@@ -54,6 +54,7 @@ function canSignGitTags(): ResultAsync<boolean, Error> {
 }
 
 function createTag(context: KiaraContext): ResultAsync<KiaraContext, Error> {
+    logger.info("Creating annotated tag...");
     if (context.options.dryRun) {
         return okAsync(context);
     }
