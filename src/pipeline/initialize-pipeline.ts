@@ -52,6 +52,9 @@ export function initializePipeline(options: KiaraOptions): ResultAsync<void, Err
                 return verifyConditions(ctx);
             })
             .andThen(selectBumpStrategy)
+            .andTee((context) => {
+                pipelineContext = context;
+            })
             .andThen((context) =>
                 executeWithRollback(
                     bumpVersion,
@@ -100,9 +103,7 @@ export function initializePipeline(options: KiaraOptions): ResultAsync<void, Err
                     "Push and release",
                     context,
                     rollbackStack
-                ).andTee((context) => {
-                    pipelineContext = context;
-                })
+                )
             )
             .andThen(() => okAsync<void, Error>(undefined)) // Convert final result to void
             .andTee(() => logger.success("Release process completed successfully!"))
