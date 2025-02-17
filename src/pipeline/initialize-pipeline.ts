@@ -17,16 +17,15 @@ export function initializePipeline(options: KiaraOptions): ResultAsync<void, Err
     logger.info(`Running ${color.magenta("kiara")} version ${color.dim(INTERNAL.VERSION)}`);
     logger.verbose(`Options: ${JSON.stringify(options)}`);
 
-    const pipeline: ResultAsync<void, Error> = createContext(options)
+    return createContext(options)
         .andThen(verifyConditions)
         .andThen(selectBumpStrategy)
         .andThen(bumpVersion)
         .andThen(generateChangelog)
         .andThen(createTagAndCommit)
-        .andThen(pushAndRelease);
-
-    return pipeline.mapErr((error: Error): Error => {
-        logger.error(error.message);
-        process.exit(1);
-    });
+        .andThen(pushAndRelease)
+        .mapErr((error: Error): Error => {
+            logger.error(error.message);
+            process.exit(1);
+        });
 }
