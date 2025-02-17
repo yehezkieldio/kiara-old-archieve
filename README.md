@@ -75,8 +75,8 @@ bunx kiara --help
 The available CLI flags are as follows:
 
 - `-n, --name`: Project or package name to release. Default is the package name from package.json.
-- `-b, --bump-strategy`: Specify to use recommended version bump according to commit messages or manual version bump. Default is empty, which prompts for version bump strategy.
-- `-r, --release-type`: Specify the release type for manual version bump. Default is empty, which prompts for release type.
+- `-b, --bump-strategy`: Specify to use recommended version bump according to commit messages or manual version bump. Default is empty, which prompts for version bump strategy. Options are `recommended` or `manual`.
+- `-r, --release-type`: Specify the release type for manual version bump. Default is empty, which prompts for release type. Options are `major`, `minor`, or `patch`.
 - `-t, --token`: GitHub token for creating releases. Default is empty.
 - `--skip-bump`: Skip version bumping and use the current version.
 - `--dry-run`: Perform a dry run without making changes.
