@@ -1,6 +1,7 @@
 import { execa } from "execa";
-import { type Result, ResultAsync, err, ok } from "neverthrow";
+import { type Result, ResultAsync, err, ok, okAsync } from "neverthrow";
 import type { BumpStrategy, KiaraContext, KiaraOptions, ReleaseType } from "#/kiara";
+import { logger } from "#/libs/logger";
 
 /**
  * Check if a file exists.
@@ -10,6 +11,30 @@ export function fileExists(path: string): ResultAsync<boolean, Error> {
     return ResultAsync.fromPromise(
         Bun.file(path).exists(),
         (error: unknown): Error => new Error(`Error checking if file exists: ${error}`)
+    );
+}
+
+/**
+ * Executes a Git command in the specified context.
+ * @param command The Git command to execute.
+ * @param context The Kiara context.
+ * @param errorMessage The error message to display on failure.
+ */
+export function executeGitCommand(
+    command: string[],
+    context: KiaraContext,
+    errorMessage: string
+): ResultAsync<{ command: string; stdout: string }, Error> {
+    const gitCommand = `git ${command.join(" ")}`;
+    logger.verbose(`Would execute: ${gitCommand}`);
+
+    if (context.options.dryRun) {
+        return okAsync({ command: gitCommand, stdout: "" });
+    }
+
+    return ResultAsync.fromPromise(
+        execa("git", command, { cwd: process.cwd() }),
+        (error: unknown): Error => new Error(`${errorMessage}: ${error}`)
     );
 }
 
@@ -154,6 +179,10 @@ export function validateOptions(options: KiaraOptions): Result<KiaraOptions, Err
     );
 }
 
+/**
+ * Flattens multiline text by trimming lines and joining them with "\\n".
+ * @param text The multiline text to flatten.
+ */
 export function flattenMultilineText(text: string): string {
     return text
         .split("\n")
