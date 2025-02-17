@@ -22,7 +22,7 @@ jobs:
             - name: to NPM
               run: bun publish --registry=https://registry.npmjs.org
               env:
-                  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+                  NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
 
             - name: to GitHub
               run: bun publish --registry=https://npm.pkg.github.com

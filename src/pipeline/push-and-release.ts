@@ -61,7 +61,8 @@ function createGitHubRelease(context: KiaraContext): ResultAsync<KiaraContext, E
                             make_latest: "true",
                             name: resolveTagTemplate(context),
                         }),
-                        (): Error => new Error("error")
+                        (error: unknown): Error =>
+                            new Error(`Error creating GitHub release: ${error}`)
                     );
                 });
             });
