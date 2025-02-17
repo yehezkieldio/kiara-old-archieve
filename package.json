@@ -19,6 +19,9 @@
     },
     "author": "Yehezkiel Dio Sinolungan <yehezkieldio@proton.me>",
     "keywords": ["cli", "release", "versioning", "changelog"],
+    "publishConfig": {
+        "access": "public"
+    },
     "scripts": {
         "lint": "biome check src",
         "format": "biome format . --write"
