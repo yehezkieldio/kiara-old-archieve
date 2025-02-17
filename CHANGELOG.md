@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.5] - 2025-02-17
+
+### 🚀 Features
+
+- Implement rollback mechanism for failed pipeline stages
+- Add skip-push and skip-release options
+
+### 🐛 Bug Fixes
+
+- Improve error message for GitHub release creation failure
+- **generate-changelog** Create changelog.md if not exists
+
+### 💼 Other
+
+- Add permissions for release workflow
+
 ## [0.0.4] - 2025-02-17
 
 ### 🐛 Bug Fixes
