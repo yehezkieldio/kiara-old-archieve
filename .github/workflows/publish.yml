@@ -8,7 +8,7 @@ on:
 jobs:
     biome:
         name: Create Release
-        if: ${{ contains(github.event.head_commit.message, 'chore(release):') }}
+        if: ${{contains(github.event.head_commit.message, format('chore(release){0} kiara@', ':'))}}
         runs-on: ubuntu-latest
         permissions:
             contents: read
