@@ -83,9 +83,7 @@ function formatError(err: unknown, opts: FormatOptions): string {
 
     const level: number = opts?.errorLevel || 0;
     const causedPrefix: string = level > 0 ? `${"  ".repeat(level)}[cause]: ` : "";
-    const causedError: string = err.cause
-        ? `\n\n${formatError(err.cause, { ...opts, errorLevel: level + 1 })}`
-        : "";
+    const causedError: string = err.cause ? `\n\n${formatError(err.cause, { ...opts, errorLevel: level + 1 })}` : "";
 
     return `${causedPrefix + message}\n${stack}${causedError}`;
 }
@@ -144,12 +142,9 @@ function formatType(payload: LogObject, isBadge: boolean): string {
         ];
 
         const useBadge: boolean =
-            ["fatal", "fail"].includes(payload.type) ||
-            (!simpleTextTypes.includes(payload.type) && isBadge);
+            ["fatal", "fail"].includes(payload.type) || (!simpleTextTypes.includes(payload.type) && isBadge);
 
-        formatter = useBadge
-            ? createBadgeStyle(payload, typeColor)
-            : createTextStyle(prefix, typeColor);
+        formatter = useBadge ? createBadgeStyle(payload, typeColor) : createTextStyle(prefix, typeColor);
     }
 
     const visibleLength: number = stripAnsi(formatter).length;
@@ -172,10 +167,7 @@ function formatArgs(args: unknown[], opts: FormatOptions): string {
 function characterFormat(str: string): string {
     return str
         .replace(/`([^`]+)`/g, (_: string, m: string | number): string => color.cyan(m))
-        .replace(
-            /\s+_([^_]+)_\s+/g,
-            (_: string, m: string | number): string => ` ${color.underline(m)} `
-        );
+        .replace(/\s+_([^_]+)_\s+/g, (_: string, m: string | number): string => ` ${color.underline(m)} `);
 }
 
 function formatPayload(payload: LogObject, opts: FormatOptions): string {
@@ -219,9 +211,7 @@ export const logger: ConsolaInstance = createConsola({
 
                 return writeStream(
                     `${line}\n`,
-                    logObj.level < 2
-                        ? ctx.options.stderr || process.stderr
-                        : ctx.options.stdout || process.stdout
+                    logObj.level < 2 ? ctx.options.stderr || process.stderr : ctx.options.stdout || process.stdout
                 );
             },
         },
