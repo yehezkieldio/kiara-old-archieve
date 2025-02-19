@@ -65,7 +65,19 @@ type Commit = CommitBase & Record<string, string | null>;
  */
 function incrementVersion(context: KiaraContext, increment: ReleaseType): string {
     const preReleaseId: string = context.options.preReleaseId || "alpha";
-    return semver.inc(context.currentVersion, increment, preReleaseId, "0") ?? context.currentVersion;
+    const specialReleases: string[] = ["next", "canary", "nightly"];
+
+    if (specialReleases.includes(context.options.releaseIdentifierBase)) {
+        return semver.inc(context.currentVersion, increment, preReleaseId, false) ?? context.currentVersion;
+    }
+
+    function ensureIdentifierBase(value: string): "0" | "1" {
+        return value === "0" || value === "1" ? value : "0";
+    }
+
+    const releaseIdentifier: "0" | "1" = ensureIdentifierBase(context.options.releaseIdentifierBase);
+
+    return semver.inc(context.currentVersion, increment, preReleaseId, releaseIdentifier) ?? context.currentVersion;
 }
 
 /**

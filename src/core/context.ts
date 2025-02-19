@@ -43,6 +43,7 @@ function createDefaultOptions(): KiaraOptions {
         bumpStrategy: "manual",
         releaseType: "",
         preReleaseId: "",
+        releaseIdentifierBase: "0",
         skipBump: false,
         skipChangelog: false,
         skipRelease: false,

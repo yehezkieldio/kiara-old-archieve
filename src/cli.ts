@@ -30,6 +30,7 @@ program
         ""
     )
     .option("-p, --pre-release-id [id]", "The pre-release identifier to use when bumping the version.", "")
+    .option("--release-identifier-base [base]", "The release identifier base to use when bumping the version.", "0")
     .option("--skip-bump", "Skip bumping the version number in manifest files.", false)
     .option("--skip-changelog", "Skip creating a new changelog entry.", false)
     .option("--skip-release", "Skip creating a new GitHub release.", false)

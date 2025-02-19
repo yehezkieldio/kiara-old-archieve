@@ -86,6 +86,15 @@ export interface KiaraOptions {
      */
     preReleaseId: string;
 
+    /**
+     * Release identifier base number to use for pre-release versions.
+     * If release type is prerelease, this option will default to `0` if not specified.
+     *
+     * @cli --release-identifier-base
+     * @default 0
+     */
+    releaseIdentifierBase: "next" | string;
+
     /* -------------------------------------------------------------------------- */
 
     /**
