@@ -26,7 +26,7 @@ function createTag(context: KiaraContext): ResultAsync<KiaraContext, Error> {
 
     return canSignGitTags(context)
         .map((canSign: boolean): string[] => {
-            const baseArgs: string[] = ["tag", "-a", tagName, "-m", `"${tagMessage}"`];
+            const baseArgs: string[] = ["tag", "-a", tagName, "-m", tagMessage];
             return canSign ? [...baseArgs, "-s"] : baseArgs;
         })
         .andThen((args: string[]): ResultAsync<GitResult, Error> => executeGit(args, context))
