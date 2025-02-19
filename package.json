@@ -29,6 +29,7 @@
         "access": "public"
     },
     "scripts": {
+        "bump": "kiara --name kiara",
         "lint": "biome check src",
         "format": "biome format . --write"
     },
