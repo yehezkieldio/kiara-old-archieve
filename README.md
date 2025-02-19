@@ -74,9 +74,10 @@ The available CLI flags are as follows:
 - `--name` or `-n`: Project identifier used during release. Defaults to the package name.
 - `--token` or `-t`: GitHub token for creating releases. Defaults to the GITHUB_TOKEN environment variable.
 - `--ci` or `-c`: Enable CI mode, skipping prompts and using defaults. Defaults to false.
-- `--bump-strategy` or `-b`: Bump strategy to use either `auto` or `manual`, if not provided will prompt. Defaults to empty string.
+- `--bump-strategy` or `-s`: Bump strategy to use either `auto` or `manual`, if not provided will prompt. Defaults to empty string.
 - `--release-type` or `-r`: Release type for manual version bumps. Ignored if using auto strategy. Defaults to empty string.
 - `--pre-release-id` or `-p`: Pre-release identifier to append to version (e.g. beta). Defaults to empty string.
+- `--release-identifier-base`: Release identifier base number to use for pre-release versions. Defaults to 0.
 - `--skip-bump`: Skip bumping version in manifest files. Defaults to false.
 - `--skip-changelog`: Skip creating a new changelog entry. Defaults to false.
 - `--skip-release`: Skip creating a GitHub release. Defaults to false.

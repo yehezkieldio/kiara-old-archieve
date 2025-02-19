@@ -62,7 +62,7 @@ export interface KiaraOptions {
     /**
      * The strategy to use when bumping the version.
      *
-     * @cli --strategy, -s
+     * @cli --bump-strategy, -s
      * @default "manual"
      */
     bumpStrategy: OptionalBumpStrategy;
