@@ -1,0 +1,70 @@
+name: Continuous Deployment
+
+on:
+    push:
+        branches:
+            - master
+
+jobs:
+    next:
+        name: Next
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            packages: write
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+
+            - name: Setup Bun
+              uses: oven-sh/setup-bun@v2
+              with:
+                  bun-version: next
+
+            - name: Install Dependencies
+              run: bun install
+
+            - name: Install Kiara
+              run: bun add -g @amarislabs/kiara
+
+            - name: Bump Version
+              run: kiara -s auto -r prerelease --release-identifier-base next --pre-release-id "next.$(git rev-parse --verify --short HEAD)" --skip-changelog --skip-release --skip-tag --skip-commit --skip-push --skip-push-tag
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Publish to NPM
+              run: bun publish --registry=https://registry.npmjs.org --tag=next
+              env:
+                  NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+            - name: Publish to GitHub
+              run: bun publish --registry=https://npm.pkg.github.com --tag=next
+              env:
+                  NPM_CONFIG_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    latest:
+        name: Latest
+        if: ${{contains(github.event.head_commit.message, format('chore(release){0} kiara@', ':'))}}
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            packages: write
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Setup Bun
+              uses: oven-sh/setup-bun@v2
+              with:
+                  bun-version: latest
+
+            - name: Publish to NPM
+              run: bun publish --registry=https://registry.npmjs.org --tag=latest
+              env:
+                  NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+            - name: Publish to GitHub
+              run: bun publish --registry=https://npm.pkg.github.com --tag=latest
+              env:
+                  NPM_CONFIG_TOKEN: ${{ secrets.GITHUB_TOKEN }}
