@@ -192,10 +192,18 @@ function getConventionalBump(): ResultAsync<BumperRecommendation, Error> {
  * @returns The next version number
  */
 function determineIncrementedVersion(context: KiaraContext, recommendation: BumperRecommendation): string {
-    return incrementVersion(
-        context,
-        recommendation.level === 0 ? "patch" : (recommendation.releaseType as ReleaseType)
-    );
+    if (context.options.releaseType === "prerelease") {
+        return incrementVersion(context, "prerelease");
+    }
+
+    const releaseType: ReleaseType =
+        recommendation.level === 0 ? "major" : recommendation.level === 1 ? "minor" : "patch";
+
+    if (context.options.preReleaseId) {
+        return incrementVersion(context, `pre${releaseType}` as ReleaseType);
+    }
+
+    return incrementVersion(context, releaseType);
 }
 
 /**
