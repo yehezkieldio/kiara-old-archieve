@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file.
 
+# [1.0.0](https://github.com/amarislabs/kiara/tree/v1.0.0) - (2025-02-19)
+
+## <!-- 0 -->Features
+
+- Initial setup ([594848a](https://github.com/amarislabs/kiara/commit/594848aa0dcfbec9479ab408c21db0dde4fff4c5))
+- Restructure, rework, and rewrite ([00c75b9](https://github.com/amarislabs/kiara/commit/00c75b90dbe36c2319eae25d17ec624c8d8010e6))
+- Support automatic version bump in CI environment ([9c9751e](https://github.com/amarislabs/kiara/commit/9c9751ead333a5fb7849792e04aa1f5a9b9e6654))
+
+## <!-- 3 -->Documentation
+
+- Add README with installation and usage instructions ([e377837](https://github.com/amarislabs/kiara/commit/e377837a76e0e954a1d6b2cfdc28ce44307e6784))
+
+## <!-- 7 -->Miscellaneous Tasks
+
+- Reset project with a single commit ([090073d](https://github.com/amarislabs/kiara/commit/090073d8700108ce9fdd151ff0106eaf6565d13a))
+- Initial rework ([c02b3c5](https://github.com/amarislabs/kiara/commit/c02b3c501f0e731c7e42f5e3199156253844d23e))
+- Format file ([f34c154](https://github.com/amarislabs/kiara/commit/f34c154b236a9cd4f667b7643df07134a7a869db)) ([#6](https://github.com/amarislabs/kiara/pull/6) by @yehezkieldio)
+
 ## [0.0.6] - 2025-02-17
 
 ### 🚜 Refactor
