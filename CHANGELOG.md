@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+# [1.1.0](https://github.com/amarislabs/kiara/compare/v1.0.0...v1.1.0) - (2025-02-19)
+
+## <!-- 0 -->Features
+
+- Add release identifier base option for version bumping ([93d8e40](https://github.com/amarislabs/kiara/commit/93d8e401be2cf51844320c513372716880f15e69))
+
+## <!-- 1 -->Bug Fixes
+
+- Remove unnecessary quotes around tag message in git tag command ([9630b95](https://github.com/amarislabs/kiara/commit/9630b951cc4950f4c4fb4b561447d6ea54f94408))
+
+## <!-- 7 -->Miscellaneous Tasks
+
+- Add bump script ([2f6e26a](https://github.com/amarislabs/kiara/commit/2f6e26a8ddc61b1d37a3a6f40763eb044fc9639d))
+
 # [1.0.0](https://github.com/amarislabs/kiara/tree/v1.0.0) - (2025-02-19)
 
 ## <!-- 0 -->Features
