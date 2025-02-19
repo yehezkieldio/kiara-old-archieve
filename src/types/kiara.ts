@@ -151,6 +151,7 @@ export interface KiaraOptions {
     /**
      * Whether to create a GitHub release draft.
      *
+     * @cli --github-draft
      * @default false
      */
     githubDraft: boolean;
@@ -159,6 +160,7 @@ export interface KiaraOptions {
      * Whether to create a GitHub release prerelease.
      * If prerelease is enabled, this will be set to true.
      *
+     * @cli --github-prerelease
      * @default false
      */
     githubPrerelease: boolean;
@@ -166,6 +168,7 @@ export interface KiaraOptions {
     /**
      * Whether to create a latest release.
      *
+     * @cli --github-latest
      * @default true
      */
     githubLatest: boolean;
