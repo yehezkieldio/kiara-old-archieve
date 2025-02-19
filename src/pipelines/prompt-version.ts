@@ -4,7 +4,7 @@ import { generateAutomaticVersion, generateManualVersion } from "#/core/versioni
 import type { BumpStrategy, KiaraContext } from "#/types/kiara";
 import type { PromptSelectChoice } from "#/types/select";
 import { createErrorFromUnknown } from "#/utils/errors";
-import { logger } from "#/utils/logger";
+import { color, logger } from "#/utils/logger";
 
 /**
  * The available version bump strategies.
@@ -56,17 +56,18 @@ function executeStrategy(context: KiaraContext, strategy: BumpStrategy): ResultA
  * @param context The Kiara context
  */
 function selectBumpStrategy(context: KiaraContext): ResultAsync<KiaraContext, Error> {
-    return context.options.bumpStrategy
-        ? ResultAsync.fromPromise(
-              Promise.resolve(context.options.bumpStrategy),
-              (): Error => new Error("Failed to get bump strategy from options")
-          ).andThen(
-              (strategy: BumpStrategy): ResultAsync<KiaraContext, Error> =>
-                  executeStrategy(context, strategy as BumpStrategy)
-          )
-        : promptStrategy().andThen(
-              (strategy: BumpStrategy): ResultAsync<KiaraContext, Error> => executeStrategy(context, strategy)
-          );
+    if (context.options.bumpStrategy) {
+        return executeStrategy(context, context.options.bumpStrategy as BumpStrategy);
+    }
+
+    if (!context.options.ci) {
+        return promptStrategy().andThen(
+            (strategy: BumpStrategy): ResultAsync<KiaraContext, Error> => executeStrategy(context, strategy)
+        );
+    }
+
+    logger.info(`Using automatic version bump strategy ${color.dim("(--ci)")}`);
+    return executeStrategy(context, "auto");
 }
 
 /**
@@ -90,6 +91,11 @@ function promptStrategy(): ResultAsync<BumpStrategy, Error> {
 export function promptVersionPipeline(context: KiaraContext): ResultAsync<KiaraContext, Error> {
     if (context.options.skipBump) {
         return okAsync(context);
+    }
+
+    if (context.options.ci && !context.options.bumpStrategy) {
+        logger.info(`Using automatic version bump strategy ${color.dim("(--ci)")}`);
+        return executeStrategy(context, "auto");
     }
 
     return selectBumpStrategy(context);
