@@ -48,7 +48,7 @@ export function rollbackTag(context: KiaraContext): ResultAsync<void, Error> {
  */
 export function tagPipeline(context: KiaraContext): ResultAsync<KiaraContext, Error> {
     if (context.options.skipTag) {
-        logger.info("Skipping Git tag creation (--skip-tag)");
+        logger.info(`Skipping Git tag creation ${color.dim("(--skip-tag)")}`);
         return okAsync(context);
     }
 
