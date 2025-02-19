@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+# [1.1.1](https://github.com/amarislabs/kiara/compare/v1.1.0...v1.1.1) - (2025-02-19)
+
+## <!-- 1 -->Bug Fixes
+
+- Automatic bump should handle prerelease ([fe6bd44](https://github.com/amarislabs/kiara/commit/fe6bd44173efddc2ec1cc93eaf60af85002b02e4))
+
 # [1.1.0](https://github.com/amarislabs/kiara/compare/v1.0.0...v1.1.0) - (2025-02-19)
 
 ## <!-- 0 -->Features
