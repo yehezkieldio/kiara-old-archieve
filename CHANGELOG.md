@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file.
 
+# [1.1.2](https://github.com/amarislabs/kiara/compare/v1.1.1...v1.1.2) - (2025-02-20)
+
+## <!-- 0 -->Features
+
+- Add --bump-only and --bump-only-with-changelog options ([2f9e0bf](https://github.com/amarislabs/kiara/commit/2f9e0bf6cf8d7b0ec6377e66666c11f47e104fce))
+
+## <!-- 2 -->Refactor
+
+- Remove short flag options ([320cd9c](https://github.com/amarislabs/kiara/commit/320cd9c8ef7ffc6af02fbcbf3ad808e569dff48a))
+
+## <!-- 3 -->Documentation
+
+- Fix cli flag for bump strategy and add release identifier base ([115458e](https://github.com/amarislabs/kiara/commit/115458e0f937f8623b0a61b1464448926261548b))
+
+## <!-- 5 -->Styling
+
+- Improve skip tag log message ([49b4833](https://github.com/amarislabs/kiara/commit/49b483398e196b0cda677af3abfc190f72770d10))
+
+## <!-- 7 -->Miscellaneous Tasks
+
+- Configure continuous deployment workflow ([c424e33](https://github.com/amarislabs/kiara/commit/c424e335ad33a95ecc3f0c08cd9e836d9ceda08c))
+- Update bun version to latest ([aaf7779](https://github.com/amarislabs/kiara/commit/aaf77795cad6809ce0bb31f43fc2f7820a6f3444))
+
 # [1.1.1](https://github.com/amarislabs/kiara/compare/v1.1.0...v1.1.1) - (2025-02-19)
 
 ## <!-- 1 -->Bug Fixes
