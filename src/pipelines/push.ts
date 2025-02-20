@@ -60,6 +60,12 @@ export function rollbackPushTags(context: KiaraContext): ResultAsync<void, Error
  * Executes the push pipeline to push changes and tags to GitHub.
  */
 export function pushPipeline(context: KiaraContext): ResultAsync<KiaraContext, Error> {
+    if (context.options.bumpOnly || context.options.bumpOnlyWithChangelog) {
+        const flag = context.options.bumpOnly ? "--bump-only" : "--bump-only-with-changelog";
+        logger.info(`Skipping GitHub push and tag creation ${color.dim(`(${flag})`)}`);
+        return okAsync(context);
+    }
+
     if (context.options.skipPush && context.options.skipPushTag) {
         logger.info(`Skipping GitHub push and tag creation ${color.dim("(--skip-push) and --skip-push-tag")}`);
         return okAsync(context);

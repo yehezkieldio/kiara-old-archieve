@@ -85,6 +85,8 @@ The available CLI flags are as follows:
 - `--skip-commit`: Skip creating a commit. Defaults to false.
 - `--skip-push`: Skip pushing changes to remote. Has no effect if commit is skipped. Defaults to false.
 - `--skip-push-tag`: Skip pushing tag to remote. Has no effect if tag is skipped. Defaults to false.
+- `--bump-only-with-changelog` or `-bc`: Skip all git and release operations, only updating version and changelog.
+- `--bump-only` or `-b`: Skip all git, release, and changelog operations, only updating version.
 - `--github-draft`: Create a draft release on GitHub. Defaults to false.
 - `--github-prerelease`: Create a pre-release on GitHub. Defaults to false.
 - `--github-latest`: Create a release with the latest tag. Defaults to true.

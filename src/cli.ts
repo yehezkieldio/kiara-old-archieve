@@ -38,6 +38,12 @@ program
     .option("--skip-commit", "Skip creating a new commit.", false)
     .option("--skip-push", "Skip pushing changes to the remote repository.", false)
     .option("--skip-push-tag", "Skip pushing tag to the remote repository.", false)
+    .option(
+        "-bc, --bump-only-with-changelog",
+        "Skip all git and release operations, only updating version and changelog.",
+        false
+    )
+    .option("-b, --bump-only", "Skip all git, release, and changelog operations, only updating version.", false)
     .option("--github-draft", "Create a GitHub release draft.", false)
     .option("--github-prerelease", "Create a GitHub prerelease.", false)
     .option("--github-latest", "Create a latest release.", true)

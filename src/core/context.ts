@@ -51,6 +51,8 @@ function createDefaultOptions(): KiaraOptions {
         skipCommit: false,
         skipPush: false,
         skipPushTag: false,
+        bumpOnly: false,
+        bumpOnlyWithChangelog: false,
         githubDraft: false,
         githubPrerelease: false,
         githubLatest: true,

@@ -47,6 +47,12 @@ export function rollbackCommit(context: KiaraContext): ResultAsync<void, Error> 
  * Executes the commit pipeline to stage and commit changes.
  */
 export function commitPipeline(context: KiaraContext): ResultAsync<KiaraContext, Error> {
+    if (context.options.bumpOnly || context.options.bumpOnlyWithChangelog) {
+        const flag = context.options.bumpOnly ? "--bump-only" : "--bump-only-with-changelog";
+        logger.info(`Skipping GitHub push creation ${color.dim(`(${flag})`)}`);
+        return okAsync(context);
+    }
+
     if (context.options.skipCommit) {
         logger.info(`Skipping GitHub push creation ${color.dim("(--skip-push)")}`);
         return okAsync(context);

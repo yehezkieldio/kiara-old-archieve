@@ -47,6 +47,12 @@ export function rollbackTag(context: KiaraContext): ResultAsync<void, Error> {
  * Executes the tag pipeline to create a Git tag for the current version.
  */
 export function tagPipeline(context: KiaraContext): ResultAsync<KiaraContext, Error> {
+    if (context.options.bumpOnly || context.options.bumpOnlyWithChangelog) {
+        const flag = context.options.bumpOnly ? "--bump-only" : "--bump-only-with-changelog";
+        logger.info(`Skipping Git tag creation ${color.dim(`(${flag})`)}`);
+        return okAsync(context);
+    }
+
     if (context.options.skipTag) {
         logger.info(`Skipping Git tag creation ${color.dim("(--skip-tag)")}`);
         return okAsync(context);

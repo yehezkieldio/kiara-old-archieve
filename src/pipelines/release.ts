@@ -119,6 +119,12 @@ function createGitHubRelease(context: KiaraContext): ResultAsync<KiaraContext, E
  * Executes the release pipeline to create a GitHub release.
  */
 export function releasePipeline(context: KiaraContext): ResultAsync<KiaraContext, Error> {
+    if (context.options.bumpOnly || context.options.bumpOnlyWithChangelog) {
+        const flag = context.options.bumpOnly ? "--bump-only" : "--bump-only-with-changelog";
+        logger.info(`Skipping GitHub release creation ${color.dim(`(${flag})`)}`);
+        return okAsync(context);
+    }
+
     if (context.options.skipRelease) {
         logger.info(`Skipping GitHub release creation ${color.dim("(--skip-release)")}`);
         return okAsync(context);

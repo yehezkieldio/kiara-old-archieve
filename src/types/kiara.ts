@@ -155,6 +155,26 @@ export interface KiaraOptions {
      */
     skipPushTag: boolean;
 
+    /**
+     * Skip all git and release operations, only updating version and changelog.
+     * This is equivalent to setting skipTag, skipCommit, skipPush, skipPushTag,
+     * and skipRelease to true.
+     *
+     * @cli --bump-only-with-changelog, -bc
+     * @default false
+     */
+    bumpOnlyWithChangelog: boolean;
+
+    /**
+     * Skip all git, release, and changelog operations, only updating version.
+     * This is equivalent to setting skipTag, skipCommit, skipPush, skipPushTag,
+     * skipRelease, and skipChangelog to true.
+     *
+     * @cli --bump-only, -b
+     * @default false
+     */
+    bumpOnly: boolean;
+
     /* -------------------------------------------------------------------------- */
 
     /**

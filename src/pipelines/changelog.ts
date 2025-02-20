@@ -16,6 +16,11 @@ export function rollbackChangelog(context: KiaraContext): ResultAsync<void, Erro
  * Executes the push pipeline to push changes and tags to GitHub.
  */
 export function changelogPipeline(context: KiaraContext): ResultAsync<KiaraContext, Error> {
+    if (context.options.bumpOnly) {
+        logger.info(`Skipping changelog creation ${color.dim("(--bump-only)")}`);
+        return okAsync(context);
+    }
+
     if (context.options.skipChangelog) {
         logger.info(`Skipping changelog generation ${color.dim("(--skip-changelog)")}`);
         return okAsync(context);
