@@ -160,7 +160,7 @@ export interface KiaraOptions {
      * This is equivalent to setting skipTag, skipCommit, skipPush, skipPushTag,
      * and skipRelease to true.
      *
-     * @cli --bump-only-with-changelog, -bc
+     * @cli --bump-only-with-changelog
      * @default false
      */
     bumpOnlyWithChangelog: boolean;
@@ -170,7 +170,7 @@ export interface KiaraOptions {
      * This is equivalent to setting skipTag, skipCommit, skipPush, skipPushTag,
      * skipRelease, and skipChangelog to true.
      *
-     * @cli --bump-only, -b
+     * @cli --bump-only
      * @default false
      */
     bumpOnly: boolean;
